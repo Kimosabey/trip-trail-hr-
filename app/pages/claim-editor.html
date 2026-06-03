@@ -19,7 +19,7 @@
     .cell-txt:focus { background: var(--tt-primary-tint); outline: 1px solid var(--tt-primary); }
   </style>
 </head>
-<body class="bg-background text-on-surface pb-28">
+<body class="bg-background text-on-surface pb-36 sm:pb-28">
   <a href="#main" class="skip-link">Skip to main content</a>
   <header id="tt-nav"></header>
 
@@ -159,15 +159,15 @@
 
   <!-- sticky totals bar -->
   <div class="fixed bottom-0 inset-x-0 bg-surface border-t border-slate-200 shadow-lift z-40">
-    <div class="max-w-container mx-auto px-4 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-6 text-sm" aria-live="polite">
-        <div><span class="text-on-surface-variant">Grand Total</span><br><strong id="t-grand" class="text-lg">₹0</strong></div>
-        <div><span class="text-on-surface-variant">Advance</span><br><strong id="t-adv" class="text-lg">₹0</strong></div>
-        <div><span class="text-on-surface-variant">Balance Due</span><br><strong id="t-bal" class="text-lg text-primary">₹0</strong></div>
+    <div class="max-w-container mx-auto px-3 sm:px-8 py-2 sm:py-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+      <div class="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm" aria-live="polite">
+        <div><span class="text-on-surface-variant">Grand</span><br><strong id="t-grand" class="text-base sm:text-lg">₹0</strong></div>
+        <div><span class="text-on-surface-variant">Advance</span><br><strong id="t-adv" class="text-base sm:text-lg">₹0</strong></div>
+        <div><span class="text-on-surface-variant">Balance Due</span><br><strong id="t-bal" class="text-base sm:text-lg text-primary">₹0</strong></div>
       </div>
-      <div class="flex items-center gap-3">
-        <button id="btn-draft" class="tt-tap tt-press px-5 rounded-md border border-slate-200 bg-surface font-semibold hover:bg-slate-50">Save Draft</button>
-        <button id="btn-submit" class="tt-tap tt-press inline-flex items-center gap-2 px-5 rounded-md bg-primary hover:bg-primary-dark text-white font-semibold">
+      <div class="flex items-center gap-2 sm:gap-3 ml-auto">
+        <button id="btn-draft" class="tt-tap tt-press px-4 sm:px-5 rounded-md border border-slate-200 bg-surface font-semibold hover:bg-slate-50">Save Draft</button>
+        <button id="btn-submit" class="tt-tap tt-press inline-flex items-center gap-2 px-4 sm:px-5 rounded-md bg-primary hover:bg-primary-dark text-white font-semibold">
           <span class="material-symbols-outlined" aria-hidden="true">send</span>Submit
         </button>
       </div>
