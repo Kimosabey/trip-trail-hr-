@@ -10,11 +10,14 @@ alter table public.receipts   enable row level security;
 alter table public.approvals  enable row level security;
 
 -- helper: is the current user HR/approver staff?
+-- SECURITY DEFINER so their internal read of public.users bypasses RLS — otherwise the
+-- users policy (which calls these) would recurse infinitely on every query.
 create or replace function public.my_role() returns user_role
-language sql stable as $$ select role from public.users where id = auth.uid() $$;
+language sql stable security definer set search_path = public
+as $$ select role from public.users where id = auth.uid() $$;
 
 create or replace function public.is_staff() returns boolean
-language sql stable as $$
+language sql stable security definer set search_path = public as $$
   select coalesce(public.my_role() in ('hr_admin','hod','checker','approver'), false)
 $$;
 
@@ -45,14 +48,14 @@ create policy claims_delete on public.claims
 
 -- ---------- child tables: gated through the parent claim ----------
 create or replace function public.can_see_claim(p_claim text) returns boolean
-language sql stable as $$
+language sql stable security definer set search_path = public as $$
   select exists (
     select 1 from public.claims c
     where c.id = p_claim and (c.user_id = auth.uid() or public.is_staff())
   )
 $$;
 create or replace function public.can_edit_claim(p_claim text) returns boolean
-language sql stable as $$
+language sql stable security definer set search_path = public as $$
   select exists (
     select 1 from public.claims c
     where c.id = p_claim and c.user_id = auth.uid() and c.status in ('draft','returned')
