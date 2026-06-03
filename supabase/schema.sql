@@ -133,6 +133,11 @@ end $$;
 create or replace function public.trg_recompute()
 returns trigger language plpgsql as $$
 begin
+  -- recompute_claim_totals updates line_items, which re-fires this trigger.
+  -- Only run at the top level to avoid infinite recursion.
+  if pg_trigger_depth() > 1 then
+    return null;
+  end if;
   perform public.recompute_claim_totals(coalesce(new.claim_id, old.claim_id));
   return null;
 end $$;
