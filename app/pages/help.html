@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help &amp; Instructions — TripTrail</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script src="../assets/js/tailwind-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/app.css" />
+</head>
+<body class="bg-background text-on-surface">
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <header id="tt-nav"></header>
+
+  <main id="main" class="max-w-container mx-auto px-4 sm:px-8 py-8">
+    <h1 class="text-3xl font-bold tracking-tight">Help &amp; Instructions</h1>
+    <p class="text-on-surface-variant mb-6">For completing and processing your expense report (RANGSONS LLP).</p>
+
+    <div class="grid lg:grid-cols-2 gap-6">
+      <!-- rules -->
+      <section class="tt-card p-6" aria-labelledby="h-rules">
+        <h2 id="h-rules" class="flex items-center gap-2 font-semibold text-lg mb-4"><span class="material-symbols-outlined text-primary" aria-hidden="true">gavel</span>Processing rules</h2>
+        <ol class="space-y-3 list-decimal list-inside text-sm">
+          <li>Pay for all business expenses in <strong>cash</strong>. Do not charge expenses to the company by signing bills unless authorized by the appropriate authority.</li>
+          <li><strong>Entertainment expenses</strong> are permissible only if you are authorized and they directly relate to company business, immediately preceding or following a substantial business discussion.</li>
+          <li><strong>Obtain receipts</strong> for all expenses and attach them. Any expense without documentary evidence must be detailed in full on the report.</li>
+          <li><strong>Submit within 3 days</strong> of returning to headquarters.</li>
+          <li>If a balance is owed to the company, <strong>repay the cashier immediately</strong> after your journey and certify it in the report.</li>
+          <li>Show <strong>local conveyance</strong> in the specified section, cross-referenced to the travel report.</li>
+        </ol>
+      </section>
+
+      <!-- field guidance -->
+      <section class="tt-card p-6" aria-labelledby="h-fields">
+        <h2 id="h-fields" class="flex items-center gap-2 font-semibold text-lg mb-4"><span class="material-symbols-outlined text-primary" aria-hidden="true">help</span>Filling the form</h2>
+        <h3 class="font-semibold text-sm text-on-surface-variant uppercase tracking-wide mb-2">Travel Report</h3>
+        <dl class="space-y-2 text-sm mb-5">
+          <div><dt class="font-medium inline">Date —</dt> <dd class="inline text-on-surface-variant">the journey date.</dd></div>
+          <div><dt class="font-medium inline">Journey Particulars —</dt> <dd class="inline text-on-surface-variant">from one station to another (e.g. Mysore to Bengaluru).</dd></div>
+          <div><dt class="font-medium inline">Mode of Transport —</dt> <dd class="inline text-on-surface-variant">Flight / Train / Bus / Metro / Cab, etc.</dd></div>
+          <div><dt class="font-medium inline">Fare —</dt> <dd class="inline text-on-surface-variant">travel fare paid.</dd></div>
+          <div><dt class="font-medium inline">Daily Allowance —</dt> <dd class="inline text-on-surface-variant">as per your eligibility.</dd></div>
+          <div><dt class="font-medium inline">Lodging —</dt> <dd class="inline text-on-surface-variant">as per your eligibility.</dd></div>
+          <div><dt class="font-medium inline">Conveyance —</dt> <dd class="inline text-on-surface-variant">total local conveyance; filled automatically from the Local Conveyance section.</dd></div>
+          <div><dt class="font-medium inline">Miscellaneous —</dt> <dd class="inline text-on-surface-variant">any other expense in the company's interest (approval required).</dd></div>
+          <div><dt class="font-medium inline">Total —</dt> <dd class="inline text-on-surface-variant">computed automatically.</dd></div>
+        </dl>
+        <h3 class="font-semibold text-sm text-on-surface-variant uppercase tracking-wide mb-2">Local Conveyance</h3>
+        <dl class="space-y-2 text-sm">
+          <div><dt class="font-medium inline">Date / From / To —</dt> <dd class="inline text-on-surface-variant">when and where the local trip ran.</dd></div>
+          <div><dt class="font-medium inline">Mode —</dt> <dd class="inline text-on-surface-variant">Bus / Metro / Auto / Rickshaw / Taxi (Ola / Uber), etc.</dd></div>
+          <div><dt class="font-medium inline">Amount —</dt> <dd class="inline text-on-surface-variant">total amount paid.</dd></div>
+          <div><dt class="font-medium inline">Bill? / Remarks —</dt> <dd class="inline text-on-surface-variant">mark whether a bill is attached, plus any note.</dd></div>
+        </dl>
+      </section>
+    </div>
+
+    <div class="tt-card p-4 mt-6 flex items-center gap-3 bg-primary-tint border-primary/20">
+      <span class="material-symbols-outlined text-primary" aria-hidden="true">tips_and_updates</span>
+      <p class="text-sm">TripTrail does the maths for you — row totals, grand total and balance always add up, so the report is right the first time.</p>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/lib/supabaseClient.js"></script>
+  <script src="../assets/js/lib/format.js"></script>
+  <script src="../assets/js/lib/mockData.js"></script>
+  <script src="../assets/js/lib/api.js"></script>
+  <script src="../assets/js/lib/session.js"></script>
+  <script src="../assets/js/lib/auth.js"></script>
+  <script src="../assets/js/components/statusBadge.js"></script>
+  <script src="../assets/js/components/toast.js"></script>
+  <script src="../assets/js/components/nav.js"></script>
+  <script>TT.nav.render('help');</script>
+</body>
+</html>

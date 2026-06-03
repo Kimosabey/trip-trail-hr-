@@ -1,0 +1,22 @@
+-- TripTrail — optional demo seed. Run AFTER schema.sql + policies.sql.
+-- NOTE: claims reference public.users(id) which references auth.users. Create the auth
+-- users first (Authentication → Users, or via magic link), then set their role/profile here.
+-- Replace the UUIDs below with the real auth user ids.
+
+-- Example: promote a user to HR admin so they can see & track everyone.
+-- update public.users set role = 'hr_admin', designation = 'HR', department = 'HR',
+--        emp_code = 'EMP123', place_of_work = 'Mysuru'
+--  where email = 'hr@rangsons.com';
+
+-- Example demo claim (uncomment + set <HR_USER_UUID>):
+-- insert into public.claims (id, user_id, purpose, place_of_visit, trip_from, trip_to, status, submitted_at)
+-- values ('TR-2026-03-882', '<HR_USER_UUID>', 'Visit to CLIENT', 'Whitefield', '2026-03-04','2026-03-05','submitted', now());
+-- insert into public.line_items (claim_id, item_date, journey_particulars, mode_of_transport, fare, daily_allowance, lodging, misc_details, misc_amount, sort_order) values
+--   ('TR-2026-03-882','2026-03-04','Mysore to Bengaluru','Bus',430,800,1214,'',0,0),
+--   ('TR-2026-03-882','2026-03-05','Bengaluru to Mysore','Bus',401,800,0,'',0,1),
+--   ('TR-2026-03-882','2026-02-20','Mysore to Bengaluru','Cab',0,800,0,'Driver breakfast',427,2);
+-- insert into public.conveyance (claim_id, item_date, from_place, to_place, mode, amount, has_bill) values
+--   ('TR-2026-03-882','2026-03-04','Kuvempunagar','KSRTC Bus stand','Auto',120,false),
+--   ('TR-2026-03-882','2026-03-04','Kengeri Metro','Majestic','Metro',60,false),
+--   ('TR-2026-03-882','2026-03-04','Majestic','Mindful TMS Hebbal','Cab',225,true);
+-- -- totals recompute automatically via triggers.

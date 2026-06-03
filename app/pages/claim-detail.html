@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claim Review — TripTrail</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script src="../assets/js/tailwind-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/app.css" />
+</head>
+<body class="bg-background text-on-surface pb-28">
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <header id="tt-nav"></header>
+
+  <main id="main" class="max-w-container mx-auto px-4 sm:px-8 py-6">
+    <nav class="text-sm text-on-surface-variant mb-1" aria-label="Breadcrumb">
+      <a href="my-claims.html" class="hover:text-primary">My Trips</a>
+      <span aria-hidden="true"> › </span><span id="bc-id">Claim</span>
+    </nav>
+    <h1 class="text-3xl font-bold tracking-tight mb-6">Expense Claim Review</h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- left: claim body -->
+      <div class="lg:col-span-2 space-y-4" id="claim-body">
+        <div class="p-12 text-center text-on-surface-variant tt-card">Loading…</div>
+      </div>
+
+      <!-- right: approval workflow -->
+      <aside class="space-y-4">
+        <div class="tt-card p-5">
+          <h2 class="font-semibold text-lg mb-4">Approval Workflow</h2>
+          <ol id="timeline" class="space-y-1"></ol>
+        </div>
+        <div class="tt-card p-5" id="edit-box" hidden>
+          <p class="text-sm text-on-surface-variant">This claim is editable.</p>
+          <a id="edit-link" href="#" class="tt-press mt-2 inline-flex items-center gap-2 text-primary font-semibold">
+            <span class="material-symbols-outlined" aria-hidden="true">edit</span>Edit claim
+          </a>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- approver action bar (shown only to approvers/HR on actionable claims) -->
+  <div id="action-bar" class="fixed bottom-0 inset-x-0 bg-surface border-t border-slate-200 shadow-lift z-40" hidden>
+    <div class="max-w-container mx-auto px-4 sm:px-8 py-3 flex flex-wrap items-center gap-3">
+      <span class="w-8 h-8 rounded-full bg-primary text-white grid place-items-center text-xs font-semibold" id="actor-initials" aria-hidden="true">HR</span>
+      <label class="sr-only" for="comment">Comment</label>
+      <input id="comment" class="flex-1 min-w-[200px] h-11 rounded-md border border-slate-200 bg-surface px-3" placeholder="Add a comment or reason…" />
+      <button id="btn-reject" class="tt-tap tt-press inline-flex items-center gap-2 px-4 rounded-md border border-danger text-danger font-semibold hover:bg-danger-tint">
+        <span class="material-symbols-outlined" aria-hidden="true">close</span>Reject
+      </button>
+      <button id="btn-return" class="tt-tap tt-press inline-flex items-center gap-2 px-4 rounded-md border border-slate-200 font-semibold hover:bg-slate-50">
+        <span class="material-symbols-outlined" aria-hidden="true">undo</span>Return for edit
+      </button>
+      <button id="btn-approve" class="tt-tap tt-press inline-flex items-center gap-2 px-5 rounded-md bg-success text-white font-semibold hover:opacity-90">
+        <span class="material-symbols-outlined" aria-hidden="true">check</span><span id="approve-label">Approve</span>
+      </button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/lib/supabaseClient.js"></script>
+  <script src="../assets/js/lib/format.js"></script>
+  <script src="../assets/js/lib/mockData.js"></script>
+  <script src="../assets/js/lib/api.js"></script>
+  <script src="../assets/js/lib/session.js"></script>
+  <script src="../assets/js/lib/auth.js"></script>
+  <script src="../assets/js/components/statusBadge.js"></script>
+  <script src="../assets/js/components/toast.js"></script>
+  <script src="../assets/js/components/nav.js"></script>
+  <script src="../assets/js/pages/claim-detail.js"></script>
+</body>
+</html>

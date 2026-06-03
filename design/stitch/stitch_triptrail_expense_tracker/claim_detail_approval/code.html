@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TripTrail - Claim Detail</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed": "#002109",
+                      "tertiary-fixed-dim": "#62df7d",
+                      "inverse-on-surface": "#eff1f3",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "on-primary-fixed": "#00174b",
+                      "primary-fixed": "#dbe1ff",
+                      "on-surface": "#191c1e",
+                      "background": "#f7f9fb",
+                      "secondary-container": "#d5e3fc",
+                      "primary": "#004ac6",
+                      "on-primary": "#ffffff",
+                      "surface-container-high": "#e6e8ea",
+                      "surface-bright": "#f7f9fb",
+                      "primary-container": "#2563eb",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed": "#0d1c2e",
+                      "surface-container-low": "#f2f4f6",
+                      "surface-container": "#eceef0",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "on-surface-variant": "#434655",
+                      "outline": "#737686",
+                      "on-secondary-container": "#57657a",
+                      "on-tertiary-fixed-variant": "#005320",
+                      "tertiary": "#006329",
+                      "inverse-primary": "#b4c5ff",
+                      "inverse-surface": "#2d3133",
+                      "on-background": "#191c1e",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-highest": "#e0e3e5",
+                      "tertiary-fixed": "#7ffc97",
+                      "on-error-container": "#93000a",
+                      "secondary": "#515f74",
+                      "on-tertiary": "#ffffff",
+                      "surface-tint": "#0053db",
+                      "on-secondary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "outline-variant": "#c3c6d7",
+                      "surface-dim": "#d8dadc",
+                      "surface": "#f7f9fb",
+                      "on-secondary-fixed-variant": "#3a485b",
+                      "on-error": "#ffffff",
+                      "surface-variant": "#e0e3e5",
+                      "on-primary-container": "#eeefff",
+                      "tertiary-container": "#007f36",
+                      "on-tertiary-container": "#c7ffca",
+                      "secondary-fixed-dim": "#b9c7df",
+                      "secondary-fixed": "#d5e3fc"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "margin-desktop": "32px",
+                      "stack-gap": "16px",
+                      "unit": "4px",
+                      "container-max-width": "1280px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "label-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        /* Custom scrollbar for gallery */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="font-body-lg text-body-lg pb-32">
+<!-- TopNavBar -->
+<nav class="shadow-sm dark:shadow-none bg-surface-container-lowest dark:bg-surface-dim docked full-width top-0 z-50 sticky">
+<div class="hidden md:flex justify-between items-center px-margin-desktop h-16 w-full max-w-container-max-width mx-auto">
+<!-- Brand -->
+<div class="flex items-center gap-8">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">TripTrail</span>
+<!-- Navigation Links -->
+<div class="flex items-center gap-6 mt-1">
+<a class="text-secondary font-medium hover:text-primary-container transition-colors cursor-pointer transition-all active:scale-95" href="#">Dashboard</a>
+<a class="text-secondary font-medium hover:text-primary-container transition-colors cursor-pointer transition-all active:scale-95" href="#">My Trips</a>
+<a class="text-secondary font-medium hover:text-primary-container transition-colors cursor-pointer transition-all active:scale-95" href="#">Reports</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer transition-all active:scale-95" href="#">Approvals</a>
+</div>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<button class="text-secondary hover:text-primary-container transition-colors p-2 rounded-full cursor-pointer transition-all active:scale-95 flex items-center justify-center">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-secondary font-medium hover:text-primary-container transition-colors cursor-pointer transition-all active:scale-95">Settings</button>
+<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant cursor-pointer">
+<img alt="User profile avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjWuipI17faIUOoslhxD5Wfm_cktEqXP-woIJJ9q3oKYoWdrIR90EdfjQY2OHJEpCJ0bIGoam9RSy0bQ0DDjn8NwojuiVEqsa2dquzYNzk6y0rvC7_C0pqTlMGeRJVPritNtikAoxw3ILBfnjjKypr-8iTG4achH9KlACLsrSS9pj3ueXMrL1EbeEE5Z2-kwBw6_TEw28nTf9lWP1mulYQZuTJgjZuvfbI1FNETsaCUBidV6kQBBaR2UqAxEYaBnt8KMm6fVgbN4g"/>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="max-w-container-max-width mx-auto px-margin-desktop py-gutter grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Claim Details -->
+<div class="lg:col-span-8 flex flex-col gap-stack-gap">
+<!-- Page Header (Contextual) -->
+<div class="flex items-center justify-between mb-2">
+<div>
+<div class="flex items-center gap-2 text-secondary mb-1">
+<a class="hover:underline font-body-sm text-body-sm" href="#">Approvals</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="font-body-sm text-body-sm text-on-surface">Claim TR-2026-03-882</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg">Expense Claim Review</h1>
+</div>
+</div>
+<!-- Header Info Card -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-6">
+<div class="flex justify-between items-start mb-6 border-b border-surface-variant pb-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center text-primary font-bold text-xl">
+                            RD
+                        </div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Raghavendra D</h2>
+<p class="font-body-sm text-body-sm text-secondary">HR Department • Employee ID: EMP-4092</p>
+</div>
+</div>
+<div class="text-right">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">pending</span>
+                            Under Review
+                        </div>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+<div>
+<p class="font-label-sm text-label-sm text-secondary mb-1">Purpose of Travel</p>
+<p class="font-body-lg text-body-lg font-medium">Campus Recruitment Drive</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-secondary mb-1">Destination</p>
+<p class="font-body-lg text-body-lg font-medium">Bangalore, IN</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-secondary mb-1">Start Date</p>
+<p class="font-body-lg text-body-lg font-medium">01 Mar 2026</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-secondary mb-1">End Date</p>
+<p class="font-body-lg text-body-lg font-medium">04 Mar 2026</p>
+</div>
+</div>
+</section>
+<!-- Journey/Expenses Table -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden">
+<div class="px-6 py-4 border-b border-surface-variant bg-surface-bright flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md">Journey &amp; Accommodation</h3>
+<span class="font-label-md text-label-md text-secondary">2 Items</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-surface-variant bg-surface-container-lowest">
+<th class="px-6 py-3 font-label-sm text-label-sm text-secondary font-medium">Date</th>
+<th class="px-6 py-3 font-label-sm text-label-sm text-secondary font-medium">Category</th>
+<th class="px-6 py-3 font-label-sm text-label-sm text-secondary font-medium">Description/Route</th>
+<th class="px-6 py-3 font-label-sm text-label-sm text-secondary font-medium text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm">
+<tr class="border-b border-surface-variant/50 hover:bg-surface-bright transition-colors">
+<td class="px-6 py-4">01 Mar 2026</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-[18px]">train</span>
+</div>
+<span>Train Fare</span>
+</div>
+</td>
+<td class="px-6 py-4 text-secondary">Mysore to Bangalore (Shatabdi Express)</td>
+<td class="px-6 py-4 text-right font-medium">₹850</td>
+</tr>
+<tr class="hover:bg-surface-bright transition-colors">
+<td class="px-6 py-4">01 - 04 Mar</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-[18px]">hotel</span>
+</div>
+<span>Hotel</span>
+</div>
+</td>
+<td class="px-6 py-4 text-secondary">Stay at Royal Orchid, 3 Nights</td>
+<td class="px-6 py-4 text-right font-medium">₹3,200</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Local Conveyance Table -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant overflow-hidden">
+<div class="px-6 py-4 border-b border-surface-variant bg-surface-bright flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md">Local Conveyance &amp; Meals</h3>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-surface-variant bg-surface-container-lowest">
+<th class="px-6 py-3 font-label-sm text-label-sm text-secondary font-medium">Date</th>
+<th class="px-6 py-3 font-label-sm text-label-sm text-secondary font-medium">Category</th>
+<th class="px-6 py-3 font-label-sm text-label-sm text-secondary font-medium">Description</th>
+<th class="px-6 py-3 font-label-sm text-label-sm text-secondary font-medium text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm">
+<tr class="border-b border-surface-variant/50 hover:bg-surface-bright transition-colors">
+<td class="px-6 py-4">02 Mar 2026</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-[18px]">local_taxi</span>
+</div>
+<span>Taxi</span>
+</div>
+</td>
+<td class="px-6 py-4 text-secondary">Hotel to University Campus (Uber)</td>
+<td class="px-6 py-4 text-right font-medium">₹320</td>
+</tr>
+<tr class="hover:bg-surface-bright transition-colors">
+<td class="px-6 py-4">03 Mar 2026</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-[18px]">restaurant</span>
+</div>
+<span>Meals</span>
+</div>
+</td>
+<td class="px-6 py-4 text-secondary">Team Lunch with candidates</td>
+<td class="px-6 py-4 text-right font-medium">₹278</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Totals Section -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-6 flex flex-col items-end">
+<div class="w-full md:w-1/2 space-y-3">
+<div class="flex justify-between items-center text-secondary">
+<span class="font-body-lg text-body-lg">Total Expenses</span>
+<span class="font-body-lg text-body-lg">₹4,648</span>
+</div>
+<div class="flex justify-between items-center text-secondary">
+<span class="font-body-lg text-body-lg">Less Advance</span>
+<span class="font-body-lg text-body-lg">- ₹0</span>
+</div>
+<div class="h-px w-full bg-surface-variant my-2"></div>
+<div class="flex justify-between items-center text-on-surface">
+<span class="font-headline-md text-headline-md font-bold">Balance Due</span>
+<span class="font-headline-md text-headline-md font-bold text-primary">₹4,648</span>
+</div>
+</div>
+</section>
+<!-- Receipts Gallery -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-6">
+<h3 class="font-headline-md text-headline-md mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">receipt_long</span>
+                    Attached Receipts
+                </h3>
+<div class="flex flex-wrap gap-4">
+<!-- Thumbnail 1 -->
+<button class="relative group w-24 h-24 rounded-lg overflow-hidden border border-surface-variant hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors z-10 flex items-center justify-center">
+<span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md">zoom_in</span>
+</div>
+<img class="w-full h-full object-cover" data-alt="A macro photograph of a crumpled, printed train ticket resting on a light gray desk. The text on the ticket is slightly blurred but clearly indicates a travel fare. The lighting is soft and diffused, creating a realistic, everyday administrative aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLRWr-QCOffe2T8Y3l66mxluFQYWQquz7yRuIA2RKbRdzWgiMK0Jm57twniQpAMqt_pc2CYgfviF2P7YBTqKUL64Iik36IxhiLK6xuD9ldUbg9hsEMm6ZmITE6_Z_H5XIIGuJ6Jj6iv6tSsKjqevhrJGQgPKvj6cYXDvReKMga5zY4RGrF-GC0zDODdELLVVI1efPJB5flAMIlSrfZ-c0---PByncNP4zMrlAGIfuJ1Vug4GO-vLMJMAa7_5ZxOz2WQiDr-kxFHOc"/>
+</button>
+<!-- Thumbnail 2 -->
+<button class="relative group w-24 h-24 rounded-lg overflow-hidden border border-surface-variant hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors z-10 flex items-center justify-center">
+<span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md">zoom_in</span>
+</div>
+<img class="w-full h-full object-cover" data-alt="A top-down view of a crisp hotel invoice printed on white paper, neatly placed next to a sleek black pen. The invoice shows itemized charges and a total amount. The lighting is bright and even, characteristic of a modern corporate light-mode environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSCGinSQPRVJdEZPcwqto2RGheNBSFHpWAT1Iuj2wXsVH9ayWuDmp_kDenMRiHR5JAov3u1zKVGTCvjf_MoDIDyAfcC2zBUdnJWP4kydt-FgeQb-FRSVUih37RzQ79ko0WCCC262sRB-4QP_UW-fsmgCrkPEO1GVSffLyoOpvoc2ddxOX0xkrIPrw3RuxYHzrI59BOwTQg2KS3zMZNu8fq_02_43EmR7aZFgrp0H_4PBlSsKmxcXKzUd33w-0yrZoMBcr9TUcQRxc"/>
+</button>
+<!-- Thumbnail 3 -->
+<button class="relative group w-24 h-24 rounded-lg overflow-hidden border border-surface-variant hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors z-10 flex items-center justify-center">
+<span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md">zoom_in</span>
+</div>
+<img class="w-full h-full object-cover" data-alt="A close-up shot of a small, thermal-printed taxi receipt held between a person's fingers against a blurred background. The numbers are faint but legible. The overall tone is slightly cool, fitting a professional fintech application's light theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtsMcWxWskOk7_Z-qBjEBX8TEJ1g0hfqJ0oto9oAs2jTvRvRXwbCeSUzeXdsoI2OzNEVnPGd8c8P6Z5p6w2m6SthocCBvSz-HgD8dpaZt8SN6TBB5ocrNPu_kb4OlapfYjMkCSX0Rbm2ki5DeAfER-usqBpLIzfcawa3A3b_uyqmE9IoBYS_m6bc1m1nuIj8sTytls37NsaSCQ8fyBut2otOlo_CCKdL_v-7B5NMLMISStYkqBI3a9QoF18__Ja8xJjUh0OotASE8"/>
+</button>
+</div>
+</section>
+</div>
+<!-- Right Column: Approval Timeline -->
+<div class="lg:col-span-4 relative">
+<div class="sticky top-24 bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-6">
+<h3 class="font-headline-md text-headline-md mb-6 border-b border-surface-variant pb-4">Approval Workflow</h3>
+<div class="relative pl-4">
+<!-- Vertical Line Background -->
+<div class="absolute left-[15px] top-4 bottom-8 w-0.5 bg-surface-variant z-0"></div>
+<!-- Vertical Line Progress (Green/Primary) -->
+<div class="absolute left-[15px] top-4 h-[45%] w-0.5 bg-tertiary z-0"></div>
+<div class="absolute left-[15px] top-[45%] h-[20%] w-0.5 bg-primary z-0"></div>
+<div class="flex flex-col gap-6 relative z-10">
+<!-- Step 1: Submitted -->
+<div class="flex gap-4 items-start">
+<div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+<span class="material-symbols-outlined text-on-tertiary text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">Submitted</h4>
+<p class="font-body-sm text-body-sm text-secondary mt-0.5">Raghavendra D</p>
+<p class="font-label-sm text-label-sm text-outline mt-1">06 Mar 2026, 10:42 AM</p>
+</div>
+</div>
+<!-- Step 2: HOD Approved -->
+<div class="flex gap-4 items-start">
+<div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+<span class="material-symbols-outlined text-on-tertiary text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">HOD Approved</h4>
+<p class="font-body-sm text-body-sm text-secondary mt-0.5">Priya Sharma</p>
+<p class="font-label-sm text-label-sm text-outline mt-1">07 Mar 2026, 09:15 AM</p>
+</div>
+</div>
+<!-- Step 3: Checked (Current) -->
+<div class="flex gap-4 items-start">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5 shadow-md ring-4 ring-primary-fixed">
+<span class="material-symbols-outlined text-on-primary text-[18px]">visibility</span>
+</div>
+<div class="bg-primary-container/10 p-3 rounded-lg border border-primary-fixed-dim -mt-2">
+<h4 class="font-label-md text-label-md text-primary font-bold">Checked</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">HR Team / Finance Checker</p>
+<p class="font-label-sm text-label-sm text-primary mt-1">Current Status</p>
+</div>
+</div>
+<!-- Step 4: Approved (Pending) -->
+<div class="flex gap-4 items-start opacity-60">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-outline flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-outline text-[18px]">verified</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-secondary">Approved</h4>
+<p class="font-body-sm text-body-sm text-outline mt-0.5">Finance Admin</p>
+</div>
+</div>
+<!-- Step 5: Paid (Pending) -->
+<div class="flex gap-4 items-start opacity-60">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-outline flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-outline text-[18px]">payments</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-secondary">Paid</h4>
+<p class="font-body-sm text-body-sm text-outline mt-0.5">System</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Action Bar (Fixed Desktop) -->
+<div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest shadow-[0_-4px_15px_-3px_rgba(15,23,42,0.05)] border-t border-surface-variant z-40 py-4 px-margin-desktop">
+<div class="max-w-container-max-width mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+<!-- Comment Input -->
+<div class="w-full md:w-1/2 lg:w-1/3 flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+                    HR
+                </div>
+<input class="w-full h-11 px-4 rounded-lg border border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary outline-none font-body-sm text-body-sm transition-all" placeholder="Add a comment or reason..." type="text"/>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-3 w-full md:w-auto justify-end">
+<button class="h-11 px-6 rounded-lg font-label-md text-label-md text-error border border-error bg-surface-container-lowest hover:bg-error-container/20 transition-colors flex items-center gap-2 active:scale-95">
+<span class="material-symbols-outlined text-[18px]">close</span>
+                    Reject
+                </button>
+<button class="h-11 px-6 rounded-lg font-label-md text-label-md text-on-surface-variant border border-outline bg-surface-container-lowest hover:bg-surface-variant transition-colors flex items-center gap-2 active:scale-95">
+<span class="material-symbols-outlined text-[18px]">edit_note</span>
+                    Return for edit
+                </button>
+<button class="h-11 px-8 rounded-lg font-label-md text-label-md text-on-tertiary bg-tertiary hover:bg-tertiary-container hover:text-on-tertiary-container shadow-sm hover:shadow-md transition-all flex items-center gap-2 active:scale-95">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                    Approve
+                </button>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,8 @@
+# TripTrail — Netlify deploy config. No build step (buildless static app).
+[build]
+  publish = "app"
+
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200

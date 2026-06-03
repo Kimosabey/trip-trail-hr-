@@ -1,0 +1,27 @@
+/* TripTrail — design tokens as CSS variables.
+   Single source of truth for colors/spacing/shadow used outside Tailwind utilities. */
+:root {
+  --tt-bg: #f7f9fb;
+  --tt-surface: #ffffff;
+  --tt-border: #e2e8f0;
+  --tt-text: #0f172a;
+  --tt-text-muted: #475569;
+
+  --tt-primary: #2563eb;
+  --tt-primary-dark: #1d4ed8;
+  --tt-primary-tint: #eff6ff;
+
+  --tt-success: #16a34a;
+  --tt-warning: #d97706;
+  --tt-danger: #dc2626;
+  --tt-info: #4f46e5;
+  --tt-teal: #0d9488;
+
+  --tt-radius: 0.5rem;
+  --tt-radius-lg: 1rem;
+  --tt-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.05);
+  --tt-shadow-lift: 0 10px 15px -3px rgba(15, 23, 42, 0.1);
+
+  --tt-gutter: 24px;
+  --tt-stack-gap: 16px;
+}

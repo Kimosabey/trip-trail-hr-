@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Travel Report — TripTrail</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script src="../assets/js/tailwind-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/app.css" />
+  <style>
+    /* number inputs in tables: tight, right-aligned */
+    .cell-num { width: 100%; text-align: right; background: transparent; border: 0; padding: 6px 4px; border-radius: 6px; }
+    .cell-num:focus { background: var(--tt-primary-tint); outline: 1px solid var(--tt-primary); }
+    .cell-txt { width: 100%; background: transparent; border: 0; padding: 6px 4px; border-radius: 6px; }
+    .cell-txt:focus { background: var(--tt-primary-tint); outline: 1px solid var(--tt-primary); }
+  </style>
+</head>
+<body class="bg-background text-on-surface pb-28">
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <header id="tt-nav"></header>
+
+  <main id="main" class="max-w-container mx-auto px-4 sm:px-8 py-6">
+    <!-- breadcrumb + title -->
+    <nav class="text-sm text-on-surface-variant mb-1" aria-label="Breadcrumb">
+      <a href="my-claims.html" class="hover:text-primary">My Trips</a>
+      <span aria-hidden="true"> › </span><span>New Report</span>
+    </nav>
+    <div class="flex items-center justify-between gap-4 mb-6">
+      <h1 class="text-3xl font-bold tracking-tight" id="page-title">New Travel Report</h1>
+      <span id="status-pill"></span>
+    </div>
+
+    <!-- 1) Traveller details -->
+    <section class="tt-card p-5 mb-4" aria-labelledby="h-traveller">
+      <h2 id="h-traveller" class="flex items-center gap-2 font-semibold text-lg mb-4">
+        <span class="material-symbols-outlined text-primary" aria-hidden="true">badge</span>Traveller Details
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1" for="f-name">Name &amp; Designation</label>
+          <input id="f-name" class="w-full h-12 rounded-md border border-slate-200 bg-slate-50 px-3" readonly />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" for="f-pow">Place of Work</label>
+          <input id="f-pow" class="w-full h-12 rounded-md border border-slate-200 bg-slate-50 px-3" readonly />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" for="f-emp">Emp. Code</label>
+          <input id="f-emp" class="w-full h-12 rounded-md border border-slate-200 bg-slate-50 px-3" readonly />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" for="f-dept">Department</label>
+          <input id="f-dept" class="w-full h-12 rounded-md border border-slate-200 bg-slate-50 px-3" readonly />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" for="f-purpose">Purpose of Travel <span class="text-danger">*</span></label>
+          <input id="f-purpose" required class="w-full h-12 rounded-md border border-slate-200 bg-surface px-3" placeholder="e.g. Visit to CLIENT" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" for="f-visit">Place of Visit <span class="text-danger">*</span></label>
+          <input id="f-visit" required class="w-full h-12 rounded-md border border-slate-200 bg-surface px-3" placeholder="e.g. Whitefield" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" for="f-from">Date From <span class="text-danger">*</span></label>
+          <input id="f-from" type="date" required class="w-full h-12 rounded-md border border-slate-200 bg-surface px-3" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" for="f-to">Date To <span class="text-danger">*</span></label>
+          <input id="f-to" type="date" required class="w-full h-12 rounded-md border border-slate-200 bg-surface px-3" />
+        </div>
+      </div>
+    </section>
+
+    <!-- 2) Journey & expenses -->
+    <section class="tt-card p-5 mb-4" aria-labelledby="h-journey">
+      <h2 id="h-journey" class="flex items-center gap-2 font-semibold text-lg mb-4">
+        <span class="material-symbols-outlined text-primary" aria-hidden="true">route</span>Journey &amp; Expenses
+      </h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm min-w-[860px]">
+          <thead>
+            <tr class="text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant border-b border-slate-200">
+              <th scope="col" class="py-2 px-2">Date</th>
+              <th scope="col" class="py-2 px-2">Journey Particulars</th>
+              <th scope="col" class="py-2 px-2">Mode</th>
+              <th scope="col" class="py-2 px-2 text-right">Fare ₹</th>
+              <th scope="col" class="py-2 px-2 text-right">DA ₹</th>
+              <th scope="col" class="py-2 px-2 text-right">Lodging ₹</th>
+              <th scope="col" class="py-2 px-2 text-right">Local Conv. ₹</th>
+              <th scope="col" class="py-2 px-2">Misc Details</th>
+              <th scope="col" class="py-2 px-2 text-right">Misc ₹</th>
+              <th scope="col" class="py-2 px-2 text-right">Row Total ₹</th>
+              <th scope="col" class="py-2 px-2"><span class="sr-only">Remove</span></th>
+            </tr>
+          </thead>
+          <tbody id="li-rows"></tbody>
+        </table>
+      </div>
+      <p class="text-xs text-on-surface-variant mt-2">Local Conv. fills automatically from the Local Conveyance section below.</p>
+      <button id="add-li" class="tt-press mt-3 inline-flex items-center gap-2 text-primary font-semibold border border-dashed border-primary/40 rounded-md px-4 py-2 hover:bg-primary-tint">
+        <span class="material-symbols-outlined" aria-hidden="true">add</span>Add journey row
+      </button>
+    </section>
+
+    <!-- 3) Local conveyance -->
+    <section class="tt-card p-5 mb-4" aria-labelledby="h-conv">
+      <div class="flex items-center justify-between">
+        <h2 id="h-conv" class="flex items-center gap-2 font-semibold text-lg">
+          <span class="material-symbols-outlined text-primary" aria-hidden="true">directions_bus</span>Local Conveyance Details
+        </h2>
+        <span class="text-sm font-semibold">Total: <span id="conv-total">₹0</span></span>
+      </div>
+      <div class="overflow-x-auto mt-4">
+        <table class="w-full text-sm min-w-[760px]">
+          <thead>
+            <tr class="text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant border-b border-slate-200">
+              <th scope="col" class="py-2 px-2">Date</th>
+              <th scope="col" class="py-2 px-2">From</th>
+              <th scope="col" class="py-2 px-2">To</th>
+              <th scope="col" class="py-2 px-2">Mode</th>
+              <th scope="col" class="py-2 px-2 text-right">Amount ₹</th>
+              <th scope="col" class="py-2 px-2">Bill?</th>
+              <th scope="col" class="py-2 px-2">Remarks</th>
+              <th scope="col" class="py-2 px-2"><span class="sr-only">Remove</span></th>
+            </tr>
+          </thead>
+          <tbody id="cv-rows"></tbody>
+        </table>
+      </div>
+      <button id="add-cv" class="tt-press mt-3 inline-flex items-center gap-2 text-primary font-semibold border border-dashed border-primary/40 rounded-md px-4 py-2 hover:bg-primary-tint">
+        <span class="material-symbols-outlined" aria-hidden="true">add</span>Add conveyance row
+      </button>
+    </section>
+
+    <!-- 4) Receipts -->
+    <section class="tt-card p-5 mb-4" aria-labelledby="h-rec">
+      <h2 id="h-rec" class="flex items-center gap-2 font-semibold text-lg mb-4">
+        <span class="material-symbols-outlined text-primary" aria-hidden="true">receipt_long</span>Receipts / Bills
+      </h2>
+      <label for="f-receipts" class="block cursor-pointer border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:bg-slate-50">
+        <span class="material-symbols-outlined text-4xl text-primary" aria-hidden="true">cloud_upload</span>
+        <p class="font-medium mt-2">Drop photos or PDFs here, or tap to upload</p>
+        <p class="text-xs text-on-surface-variant">Max file size 10MB each</p>
+      </label>
+      <input id="f-receipts" type="file" accept="image/*,application/pdf" multiple class="sr-only" />
+      <div id="rec-list" class="flex flex-wrap gap-3 mt-4"></div>
+    </section>
+
+    <!-- 5) Advance -->
+    <section class="tt-card p-5 mb-4 flex flex-wrap items-center gap-4">
+      <label class="text-sm font-medium" for="f-advance">Advance Received ₹</label>
+      <input id="f-advance" type="number" min="0" value="0" class="h-11 w-40 rounded-md border border-slate-200 bg-surface px-3 text-right" />
+    </section>
+  </main>
+
+  <!-- sticky totals bar -->
+  <div class="fixed bottom-0 inset-x-0 bg-surface border-t border-slate-200 shadow-lift z-40">
+    <div class="max-w-container mx-auto px-4 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-6 text-sm" aria-live="polite">
+        <div><span class="text-on-surface-variant">Grand Total</span><br><strong id="t-grand" class="text-lg">₹0</strong></div>
+        <div><span class="text-on-surface-variant">Advance</span><br><strong id="t-adv" class="text-lg">₹0</strong></div>
+        <div><span class="text-on-surface-variant">Balance Due</span><br><strong id="t-bal" class="text-lg text-primary">₹0</strong></div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="btn-draft" class="tt-tap tt-press px-5 rounded-md border border-slate-200 bg-surface font-semibold hover:bg-slate-50">Save Draft</button>
+        <button id="btn-submit" class="tt-tap tt-press inline-flex items-center gap-2 px-5 rounded-md bg-primary hover:bg-primary-dark text-white font-semibold">
+          <span class="material-symbols-outlined" aria-hidden="true">send</span>Submit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/lib/supabaseClient.js"></script>
+  <script src="../assets/js/lib/format.js"></script>
+  <script src="../assets/js/lib/mockData.js"></script>
+  <script src="../assets/js/lib/api.js"></script>
+  <script src="../assets/js/lib/session.js"></script>
+  <script src="../assets/js/lib/auth.js"></script>
+  <script src="../assets/js/components/statusBadge.js"></script>
+  <script src="../assets/js/components/toast.js"></script>
+  <script src="../assets/js/components/nav.js"></script>
+  <script src="../assets/js/pages/claim-editor.js"></script>
+</body>
+</html>

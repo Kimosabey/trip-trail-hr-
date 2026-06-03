@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TripTrail - Sign In</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed": "#002109",
+                      "tertiary-fixed-dim": "#62df7d",
+                      "inverse-on-surface": "#eff1f3",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "on-primary-fixed": "#00174b",
+                      "primary-fixed": "#dbe1ff",
+                      "on-surface": "#191c1e",
+                      "background": "#f7f9fb",
+                      "secondary-container": "#d5e3fc",
+                      "primary": "#004ac6",
+                      "on-primary": "#ffffff",
+                      "surface-container-high": "#e6e8ea",
+                      "surface-bright": "#f7f9fb",
+                      "primary-container": "#2563eb",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed": "#0d1c2e",
+                      "surface-container-low": "#f2f4f6",
+                      "surface-container": "#eceef0",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "on-surface-variant": "#434655",
+                      "outline": "#737686",
+                      "on-secondary-container": "#57657a",
+                      "on-tertiary-fixed-variant": "#005320",
+                      "tertiary": "#006329",
+                      "inverse-primary": "#b4c5ff",
+                      "inverse-surface": "#2d3133",
+                      "on-background": "#191c1e",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-highest": "#e0e3e5",
+                      "tertiary-fixed": "#7ffc97",
+                      "on-error-container": "#93000a",
+                      "secondary": "#515f74",
+                      "on-tertiary": "#ffffff",
+                      "surface-tint": "#0053db",
+                      "on-secondary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "outline-variant": "#c3c6d7",
+                      "surface-dim": "#d8dadc",
+                      "surface": "#f7f9fb",
+                      "on-secondary-fixed-variant": "#3a485b",
+                      "on-error": "#ffffff",
+                      "surface-variant": "#e0e3e5",
+                      "on-primary-container": "#eeefff",
+                      "tertiary-container": "#007f36",
+                      "on-tertiary-container": "#c7ffca",
+                      "secondary-fixed-dim": "#b9c7df",
+                      "secondary-fixed": "#d5e3fc"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.375rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "margin-desktop": "32px",
+                      "stack-gap": "16px",
+                      "unit": "4px",
+                      "container-max-width": "1280px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background min-h-screen flex items-center justify-center p-4 antialiased font-body-lg text-on-surface">
+<main class="w-full max-w-md">
+<!-- Login Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_1px_3px_rgba(15,23,42,0.05),_0px_10px_15px_-3px_rgba(15,23,42,0.02)] border border-surface-variant p-8 sm:p-10 text-center flex flex-col items-center">
+<!-- Logo -->
+<img alt="TripTrail Logo" class="h-[60px] w-auto mb-8" src="data:image/png;base64,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"/>
+<!-- Headers -->
+<h1 class="font-headline-md text-headline-md text-on-surface mb-2">Sign in to TripTrail</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-8">Travel &amp; expense reporting for RANGSONS LLP</p>
+<!-- Form -->
+<form action="#" class="w-full flex flex-col gap-stack-gap" method="POST">
+<div class="flex flex-col text-left">
+<label class="font-label-md text-label-md text-on-surface mb-unit" for="email">Company email</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" style="font-variation-settings: 'FILL' 0;">mail</span>
+<input class="w-full h-12 pl-10 pr-4 rounded bg-surface-container-lowest border border-outline-variant text-on-surface font-body-lg text-body-lg focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-shadow placeholder:text-outline-variant" id="email" name="email" placeholder="e.g. name@rangsons.com" required="" type="email"/>
+</div>
+</div>
+<button class="w-full h-11 mt-2 bg-primary-container text-on-primary-container font-label-md text-label-md rounded flex items-center justify-center gap-2 hover:bg-primary transition-colors shadow-sm hover:shadow-[0px_4px_6px_-1px_rgba(37,99,235,0.2)] active:scale-[0.98]" type="submit">
+                    Send magic link
+                    <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">arrow_forward</span>
+</button>
+</form>
+<!-- Footer Text -->
+<p class="mt-6 font-body-sm text-body-sm text-outline">
+                We'll email you a secure sign-in link — no password needed.
+            </p>
+</div>
+<!-- Ambient decorative elements -->
+<div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10 flex items-center justify-center">
+<div class="absolute w-[800px] h-[800px] bg-primary-fixed-dim/20 rounded-full blur-3xl opacity-50 -top-1/4 -right-1/4"></div>
+<div class="absolute w-[600px] h-[600px] bg-secondary-container/20 rounded-full blur-3xl opacity-50 -bottom-1/4 -left-1/4"></div>
+</div>
+</main>
+<script>
+        // Simple form submission effect
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-variation-settings: \'FILL\' 0;">progress_activity</span> Sending...';
+            btn.classList.add('opacity-80', 'pointer-events-none');
+            
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined" style="font-variation-settings: \'FILL\' 1;">check_circle</span> Link Sent!';
+                btn.classList.replace('bg-primary-container', 'bg-tertiary-container');
+                btn.classList.replace('text-on-primary-container', 'text-on-tertiary-container');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.replace('bg-tertiary-container', 'bg-primary-container');
+                    btn.classList.replace('text-on-tertiary-container', 'text-on-primary-container');
+                    btn.classList.remove('opacity-80', 'pointer-events-none');
+                    this.reset();
+                }, 3000);
+            }, 1500);
+        });
+    </script>
+</body></html>

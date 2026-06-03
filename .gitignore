@@ -1,0 +1,19 @@
+# secrets / local
+.env
+.env.*
+app/assets/js/config.local.js
+supabase/credentials.local.md
+supabase/*.local.*
+
+# os / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# deps (none for buildless app, but just in case)
+node_modules/
+
+# supabase local
+supabase/.branches/
+supabase/.temp/

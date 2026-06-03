@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TripTrail</title>
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <style>
+    body { display: grid; place-items: center; min-height: 100vh; font-family: Inter, system-ui, sans-serif; background: var(--tt-bg); color: var(--tt-text-muted); }
+  </style>
+</head>
+<body>
+  <p>Loading TripTrail…</p>
+  <noscript>TripTrail requires JavaScript. <a href="pages/login.html">Continue</a>.</noscript>
+
+  <!-- Resolve where to send the user based on their role (HR → Dashboard). -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/lib/supabaseClient.js"></script>
+  <script src="assets/js/lib/format.js"></script>
+  <script src="assets/js/lib/mockData.js"></script>
+  <script src="assets/js/lib/api.js"></script>
+  <script src="assets/js/lib/session.js"></script>
+  <script>
+    // Logged in → role home (HR → Dashboard). Logged out → public landing page.
+    (async function () {
+      try {
+        const user = await TT.api.currentUser();
+        if (user) { location.replace('pages/' + TT.session.homeFor(user.role || 'employee')); return; }
+      } catch (e) { /* fall through */ }
+      location.replace('landing.html');
+    })();
+  </script>
+</body>
+</html>

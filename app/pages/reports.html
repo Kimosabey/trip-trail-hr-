@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports — TripTrail</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script src="../assets/js/tailwind-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/app.css" />
+</head>
+<body class="bg-background text-on-surface">
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <header id="tt-nav"></header>
+
+  <main id="main" class="max-w-container mx-auto px-4 sm:px-8 py-8">
+    <h1 class="text-3xl font-bold tracking-tight">Reports</h1>
+    <p class="text-on-surface-variant mb-6">Travel spend analytics across all employees.</p>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <section class="tt-card p-5" aria-labelledby="h-dept">
+        <h2 id="h-dept" class="font-semibold text-lg mb-4">Spend by Department</h2>
+        <div id="by-dept" class="space-y-3"></div>
+      </section>
+
+      <section class="tt-card p-5" aria-labelledby="h-month">
+        <h2 id="h-month" class="font-semibold text-lg mb-4">Spend by Month</h2>
+        <div id="by-month" class="flex items-end gap-3 h-48"></div>
+      </section>
+
+      <section class="tt-card p-5" aria-labelledby="h-adv">
+        <h2 id="h-adv" class="font-semibold text-lg mb-4">Outstanding Advances</h2>
+        <div id="advances" class="space-y-2 text-sm"></div>
+      </section>
+
+      <section class="tt-card p-5 flex flex-col justify-center" aria-labelledby="h-kpi">
+        <h2 id="h-kpi" class="font-semibold text-lg mb-4">Key Numbers</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div><p class="text-on-surface-variant text-sm">Total Claims</p><p id="k-total" class="text-2xl font-bold">—</p></div>
+          <div><p class="text-on-surface-variant text-sm">Total Spend</p><p id="k-spend" class="text-2xl font-bold">—</p></div>
+          <div><p class="text-on-surface-variant text-sm">Avg per Claim</p><p id="k-avg" class="text-2xl font-bold">—</p></div>
+          <div><p class="text-on-surface-variant text-sm">Pending</p><p id="k-pending" class="text-2xl font-bold">—</p></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/lib/supabaseClient.js"></script>
+  <script src="../assets/js/lib/format.js"></script>
+  <script src="../assets/js/lib/mockData.js"></script>
+  <script src="../assets/js/lib/api.js"></script>
+  <script src="../assets/js/lib/session.js"></script>
+  <script src="../assets/js/lib/auth.js"></script>
+  <script src="../assets/js/components/statusBadge.js"></script>
+  <script src="../assets/js/components/toast.js"></script>
+  <script src="../assets/js/components/nav.js"></script>
+  <script src="../assets/js/pages/reports.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in — TripTrail</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script src="../assets/js/tailwind-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/app.css" />
+</head>
+<body class="bg-background text-on-surface min-h-screen grid place-items-center px-4">
+  <main class="w-full max-w-md">
+    <div class="tt-card p-8">
+      <div class="flex items-center gap-2 font-bold text-2xl text-primary justify-center mb-6">
+        <span class="material-symbols-outlined" aria-hidden="true">trip_origin</span>TripTrail
+      </div>
+      <h1 class="text-xl font-bold text-center">Sign in to TripTrail</h1>
+      <p class="text-on-surface-variant text-center text-sm mt-1 mb-6">Travel &amp; expense reporting for RANGSONS LLP</p>
+
+      <form id="login-form" novalidate>
+        <label class="block text-sm font-medium mb-1" for="email">Company email</label>
+        <input id="email" type="email" required autocomplete="email"
+          class="w-full h-12 rounded-md border border-slate-200 bg-surface px-3 mb-3"
+          placeholder="you@rangsons.com" />
+
+        <label class="block text-sm font-medium mb-1" for="password">Password</label>
+        <input id="password" type="password" required autocomplete="current-password"
+          class="w-full h-12 rounded-md border border-slate-200 bg-surface px-3 mb-1"
+          placeholder="Your password" aria-describedby="email-err" />
+        <p id="email-err" class="text-danger text-sm mb-3 hidden" role="alert"></p>
+
+        <button type="submit" id="primary-btn" class="tt-tap tt-press w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-semibold rounded-md">
+          <span class="material-symbols-outlined" aria-hidden="true">login</span><span id="primary-label">Sign in</span>
+        </button>
+      </form>
+
+      <p class="text-sm text-center mt-4">
+        <span id="toggle-hint" class="text-on-surface-variant">New here?</span>
+        <button id="toggle-mode" class="text-primary font-medium hover:underline">Create an account</button>
+      </p>
+      <div class="flex items-center gap-3 my-4"><span class="flex-1 h-px bg-slate-200"></span><span class="text-xs text-on-surface-variant">or</span><span class="flex-1 h-px bg-slate-200"></span></div>
+      <button id="magic-btn" class="tt-tap tt-press w-full inline-flex items-center justify-center gap-2 border border-slate-200 bg-surface hover:bg-slate-50 font-semibold rounded-md text-on-surface-variant">
+        <span class="material-symbols-outlined" aria-hidden="true">mail</span>Email me a sign-in link instead
+      </button>
+
+      <div id="sent" class="hidden text-center mt-6 p-4 rounded-md bg-success-tint text-success">
+        <span class="material-symbols-outlined text-3xl" aria-hidden="true">mark_email_read</span>
+        <p class="font-medium mt-1">Check your inbox</p>
+        <p class="text-sm">We sent a sign-in link to <strong id="sent-email"></strong>.</p>
+      </div>
+    </div>
+    <p id="demo-note" class="text-center text-xs text-on-surface-variant mt-4 hidden">Demo mode — any email continues to the app.</p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/lib/supabaseClient.js"></script>
+  <script src="../assets/js/lib/format.js"></script>
+  <script src="../assets/js/lib/mockData.js"></script>
+  <script src="../assets/js/lib/api.js"></script>
+  <script src="../assets/js/lib/session.js"></script>
+  <script src="../assets/js/components/toast.js"></script>
+  <script>
+    (function () {
+      const form = document.getElementById('login-form');
+      const email = document.getElementById('email');
+      const password = document.getElementById('password');
+      const err = document.getElementById('email-err');
+      const primaryLabel = document.getElementById('primary-label');
+      const toggleBtn = document.getElementById('toggle-mode');
+      const toggleHint = document.getElementById('toggle-hint');
+      let mode = 'signin'; // or 'signup'
+      if (APP_CONFIG.USE_MOCK) document.getElementById('demo-note').classList.remove('hidden');
+
+      function showErr(msg) { err.textContent = msg; err.classList.remove('hidden'); }
+      function validEmail(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v); }
+
+      // If returning from a magic link (real mode), the session lands here → route home.
+      if (!APP_CONFIG.USE_MOCK) {
+        TT.api.currentUser().then(function (u) { if (u) TT.session.goHome(''); }).catch(function () {});
+      }
+
+      toggleBtn.addEventListener('click', function () {
+        mode = mode === 'signin' ? 'signup' : 'signin';
+        primaryLabel.textContent = mode === 'signin' ? 'Sign in' : 'Create account';
+        toggleHint.textContent = mode === 'signin' ? 'New here?' : 'Already have an account?';
+        toggleBtn.textContent = mode === 'signin' ? 'Create an account' : 'Sign in instead';
+        err.classList.add('hidden');
+      });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        err.classList.add('hidden');
+        const v = email.value.trim(), pw = password.value;
+        if (!validEmail(v)) { showErr('Enter a valid email address.'); email.focus(); return; }
+        if (!pw || pw.length < 6) { showErr('Password must be at least 6 characters.'); password.focus(); return; }
+
+        if (APP_CONFIG.USE_MOCK) { TT.session.goHome(''); return; }
+
+        const op = mode === 'signin' ? TT.supa.signInPassword(v, pw) : TT.supa.signUp(v, pw);
+        op.then(function () { TT.session.goHome(''); })
+          .catch(function (e) {
+            console.error(e);
+            showErr((e && e.message) ? e.message : 'Could not sign in. Try again.');
+          });
+      });
+
+      // magic-link fallback
+      document.getElementById('magic-btn').addEventListener('click', function () {
+        err.classList.add('hidden');
+        const v = email.value.trim();
+        if (!validEmail(v)) { showErr('Enter your email first, then request a link.'); email.focus(); return; }
+        if (APP_CONFIG.USE_MOCK) { TT.session.goHome(''); return; }
+        TT.supa.sendMagicLink(v).then(function () {
+          document.getElementById('sent-email').textContent = v;
+          document.getElementById('sent').classList.remove('hidden');
+          form.classList.add('hidden');
+        }).catch(function (e) { showErr((e && e.message) ? e.message : 'Could not send link.'); });
+      });
+    })();
+  </script>
+</body>
+</html>
