@@ -40,19 +40,26 @@ TT.supa = (function () {
   }
 
   // ---- claims ----
-  const CLAIM_SELECT = '*, line_items(*), conveyance(*), receipts(*), approvals(*)';
+  // Join the owner so the UI gets employee_name + department (they live on `users`).
+  const LIST_SELECT = '*, user:users(full_name, department)';
+  const CLAIM_SELECT = '*, user:users(full_name, department), line_items(*), conveyance(*), receipts(*), approvals(*)';
+
+  /** Flatten the joined user onto the claim so pages can read c.employee_name / c.department. */
+  function flatten(c) {
+    if (c && c.user) { c.employee_name = c.user.full_name; c.department = c.user.department; }
+    return c;
+  }
 
   async function listMyClaims() {
     const { data: { user } } = await client().auth.getUser();
-    const { data, error } = await client().from('claims').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-    if (error) throw error; return data;
+    const { data, error } = await client().from('claims').select(LIST_SELECT).eq('user_id', user.id).order('created_at', { ascending: false });
+    if (error) throw error; return (data || []).map(flatten);
   }
   async function listAllClaims(filters = {}) {
-    let q = client().from('claims').select('*').order('created_at', { ascending: false });
+    let q = client().from('claims').select(LIST_SELECT).order('created_at', { ascending: false });
     if (filters.status) q = q.eq('status', filters.status);
-    if (filters.department) q = q.eq('department', filters.department);
     const { data, error } = await q;
-    if (error) throw error; return data;
+    if (error) throw error; return (data || []).map(flatten);
   }
   async function listApprovalQueue(stage) {
     const map = { hod: 'submitted', checker: 'hod_approved', approver: 'checked' };
@@ -60,7 +67,7 @@ TT.supa = (function () {
   }
   async function getClaim(id) {
     const { data, error } = await client().from('claims').select(CLAIM_SELECT).eq('id', id).single();
-    if (error) throw error; return data;
+    if (error) throw error; return flatten(data);
   }
   async function saveClaim(claim) {
     const c = { ...claim }; const items = c.line_items || []; const conv = c.conveyance || [];
