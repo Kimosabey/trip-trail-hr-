@@ -69,21 +69,53 @@ TT.supa = (function () {
     const { data, error } = await client().from('claims').select(CLAIM_SELECT).eq('id', id).single();
     if (error) throw error; return flatten(data);
   }
+  const nd = (v) => (v === '' || v === undefined ? null : v);   // '' → null for date/text cols
+
   async function saveClaim(claim) {
-    const c = { ...claim }; const items = c.line_items || []; const conv = c.conveyance || [];
-    delete c.line_items; delete c.conveyance; delete c.receipts; delete c.approvals;
-    const { error: e1 } = await client().from('claims').upsert(c); if (e1) throw e1;
-    // replace children (simple strategy for buildless app)
-    await client().from('line_items').delete().eq('claim_id', c.id);
-    await client().from('conveyance').delete().eq('claim_id', c.id);
-    if (items.length) { const { error } = await client().from('line_items').insert(items.map((x, i) => ({ ...stripId(x), claim_id: c.id, sort_order: i }))); if (error) throw error; }
-    if (conv.length) { const { error } = await client().from('conveyance').insert(conv.map((x, i) => ({ ...stripId(x), claim_id: c.id, sort_order: i }))); if (error) throw error; }
-    return getClaim(c.id);
+    const items = claim.line_items || [];
+    const conv = claim.conveyance || [];
+    // Whitelist ONLY real `claims` columns (claim object also carries employee_name/department/user,
+    // which are not columns — sending them would fail the upsert). Totals are computed by trigger.
+    const row = {
+      id: claim.id,
+      user_id: claim.user_id,
+      purpose: nd(claim.purpose),
+      place_of_visit: nd(claim.place_of_visit),
+      trip_from: nd(claim.trip_from),
+      trip_to: nd(claim.trip_to),
+      advance_received: Number(claim.advance_received || 0),
+      status: claim.status || 'draft',
+    };
+    if (claim.status === 'submitted') row.submitted_at = new Date().toISOString();
+    const { error: e1 } = await client().from('claims').upsert(row); if (e1) throw e1;
+
+    // replace children (simple, reliable strategy for a buildless app)
+    await client().from('line_items').delete().eq('claim_id', row.id);
+    await client().from('conveyance').delete().eq('claim_id', row.id);
+    if (items.length) {
+      const rows = items.map((x, i) => ({
+        claim_id: row.id, item_date: nd(x.item_date), journey_particulars: nd(x.journey_particulars),
+        mode_of_transport: nd(x.mode_of_transport), fare: Number(x.fare || 0),
+        daily_allowance: Number(x.daily_allowance || 0), lodging: Number(x.lodging || 0),
+        local_conveyance: Number(x.local_conveyance || 0), misc_details: nd(x.misc_details),
+        misc_amount: Number(x.misc_amount || 0), sort_order: i,
+      }));
+      const { error } = await client().from('line_items').insert(rows); if (error) throw error;
+    }
+    if (conv.length) {
+      const rows = conv.map((x, i) => ({
+        claim_id: row.id, item_date: nd(x.item_date), from_place: nd(x.from_place), to_place: nd(x.to_place),
+        mode: nd(x.mode), amount: Number(x.amount || 0), has_bill: !!x.has_bill, remarks: nd(x.remarks), sort_order: i,
+      }));
+      const { error } = await client().from('conveyance').insert(rows); if (error) throw error;
+    }
+    return getClaim(row.id);
   }
   async function setStatus(id, status, comment) {
     const patch = { status }; if (status === 'submitted') patch.submitted_at = new Date().toISOString();
     const { error } = await client().from('claims').update(patch).eq('id', id); if (error) throw error;
-    await client().from('approvals').insert({ claim_id: id, stage: status, action: status, comment });
+    const me = await currentUser();
+    await client().from('approvals').insert({ claim_id: id, actor_id: me ? me.id : null, actor: me ? me.full_name : null, stage: status, action: status, comment });
     if (status === 'approved') syncToSheet(id);   // fire-and-forget
     return getClaim(id);
   }
@@ -101,12 +133,11 @@ TT.supa = (function () {
   async function markPaid(id, voucherRef) {
     const { error } = await client().from('claims').update({ status: 'paid', voucher_ref: voucherRef, paid_at: new Date().toISOString() }).eq('id', id);
     if (error) throw error;
-    await client().from('approvals').insert({ claim_id: id, stage: 'cashier', action: 'paid', comment: voucherRef ? 'Voucher ' + voucherRef : '' });
+    const me = await currentUser();
+    await client().from('approvals').insert({ claim_id: id, actor_id: me ? me.id : null, actor: me ? me.full_name : null, stage: 'cashier', action: 'paid', comment: voucherRef ? 'Voucher ' + voucherRef : '' });
     syncToSheet(id);   // fire-and-forget
     return getClaim(id);
   }
-
-  function stripId(o) { const x = { ...o }; delete x.id; return x; }
 
   return { client, sendMagicLink, signInPassword, signUp, signOut, currentUser, listMyClaims, listAllClaims, listApprovalQueue, getClaim, saveClaim, setStatus, markPaid };
 })();
