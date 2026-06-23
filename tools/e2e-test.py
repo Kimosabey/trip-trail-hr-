@@ -75,7 +75,8 @@ s, _ = req("POST", "/rest/v1/line_items", token=emp_tok, prefer="return=represen
 check("employee insert line_item", s in (200, 201), s)
 s, b = req("GET", "/rest/v1/claims?id=eq." + cid + "&select=grand_total", token=emp_tok)
 gt = (b[0]["grand_total"] if isinstance(b, list) and b else None)
-check("trigger computed grand_total = 1300", str(gt) in ("1300", "1300.00"), gt)
+gt_ok = gt is not None and abs(float(gt) - 1300) < 0.001   # compare numerically (API returns 1300.0)
+check("trigger computed grand_total = 1300", gt_ok, gt)
 s, _ = req("DELETE", "/rest/v1/claims?id=eq." + cid, token=emp_tok)
 check("cleanup delete", s in (200, 204), s)
 
