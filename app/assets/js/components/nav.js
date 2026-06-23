@@ -68,6 +68,7 @@ TT.nav = (function () {
                 <a href="profile.html" role="menuitem" class="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-slate-50"><span class="material-symbols-outlined text-base" aria-hidden="true">account_circle</span>My profile</a>
                 <a href="my-claims.html" role="menuitem" class="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-slate-50"><span class="material-symbols-outlined text-base" aria-hidden="true">luggage</span>My Trips</a>
                 <button id="tt-signout" role="menuitem" class="w-full text-left flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-danger-tint text-danger-text"><span class="material-symbols-outlined text-base" aria-hidden="true">logout</span>Sign out</button>
+                <p class="px-3 py-2 border-t border-slate-100 text-[11px] text-on-surface-variant">Built by <span class="tt-gradient-text font-semibold">Harshan Aiyappa</span></p>
               </div>
             </div>
           </div>

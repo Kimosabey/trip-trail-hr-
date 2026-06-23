@@ -4,10 +4,45 @@ html {
   font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   -webkit-text-size-adjust: 100%;   /* stop iOS from auto-inflating text */
   text-size-adjust: 100%;
+  background: var(--tt-bg);         /* base color behind the animated aurora */
 }
 body {
-  background: var(--tt-bg); color: var(--tt-text);
+  background: transparent; color: var(--tt-text);
   -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Ambient animated background (light, GPU-only: blurred gradient "aurora" blobs) --- */
+body::before, body::after {
+  content: ''; position: fixed; z-index: -1; pointer-events: none;
+  width: 55vmax; height: 55vmax; border-radius: 50%;
+  filter: blur(70px); opacity: 0.30; will-change: transform;
+}
+body::before { background: radial-gradient(circle at center, #cfe0ff, transparent 70%); top: -16vmax; left: -10vmax; animation: tt-drift1 28s ease-in-out infinite; }
+body::after  { background: radial-gradient(circle at center, #e4e7ff, transparent 70%); bottom: -20vmax; right: -12vmax; animation: tt-drift2 34s ease-in-out infinite; }
+@keyframes tt-drift1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(6vmax,4vmax) scale(1.05); } }
+@keyframes tt-drift2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-5vmax,-3vmax) scale(1.08); } }
+
+/* --- Typography: tabular figures for money + heading polish --- */
+.tt-num, table, #t-grand, #t-adv, #t-bal,
+#s-total, #s-pending, #s-approved, #s-reimbursed,
+#k-total, #k-spend, #k-avg, #k-pending {
+  font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1;
+}
+h1 { letter-spacing: -0.02em; }
+main > h1, main h1.text-3xl { font-size: clamp(1.5rem, 1.15rem + 1.6vw, 1.875rem); }
+
+/* Gradient text (used for the maker credit + brand flourishes) */
+.tt-gradient-text {
+  background: linear-gradient(90deg, #2563eb, #4f46e5 60%, #0d9488);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+/* Maker credit chip */
+.tt-credit {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(37,99,235,.08), rgba(79,70,229,.08));
+  border: 1px solid var(--tt-border); font-size: 13px;
 }
 
 /* Hide ALL scrollbars site-wide (page + any container) while keeping scroll working */
@@ -109,6 +144,15 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 
 /* Minimum tap target (WCAG 2.5.5) */
 button, .tt-tap, a.tt-tap { min-height: 44px; }
+/* icon-only buttons need width too */
+#tt-bell-btn, #tt-profile-btn, button[aria-label] { min-width: 44px; }
+
+/* Fixed bottom bars + toasts clear the iOS home indicator (safe-area) */
+.fixed.bottom-0.inset-x-0 { padding-bottom: env(safe-area-inset-bottom); }
+#tt-toasts { bottom: calc(16px + env(safe-area-inset-bottom)); }
+
+/* Never allow horizontal page overflow on small screens (wide content scrolls in its own box) */
+html, body { max-width: 100%; overflow-x: hidden; }
 
 /* --- Print / Save-PDF (claim detail looks like the official form) --- */
 @media print {
