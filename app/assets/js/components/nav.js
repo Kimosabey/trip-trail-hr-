@@ -9,6 +9,7 @@ TT.nav = (function () {
     { key: 'my-claims',  label: 'My Trips',   href: 'my-claims.html',    roles: ['employee', 'hod', 'checker', 'approver', 'hr_admin'] },
     { key: 'reports',    label: 'Reports',    href: 'reports.html',      roles: ['hr_admin'] },
     { key: 'approvals',  label: 'Approvals',  href: 'approvals.html',    roles: ['hod', 'checker', 'approver', 'hr_admin'] },
+    { key: 'admin',      label: 'Admin',      href: 'admin-users.html',  roles: ['hr_admin'] },
     { key: 'help',       label: 'Help',       href: 'help.html',         roles: ['employee', 'hod', 'checker', 'approver', 'hr_admin'] },
   ];
 
@@ -54,6 +55,7 @@ TT.nav = (function () {
                   <p class="text-sm font-medium">${user.full_name}</p>
                   <p class="text-xs text-on-surface-variant">${roleLabel(role)}</p>
                 </div>
+                <a href="profile.html" role="menuitem" class="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-slate-50"><span class="material-symbols-outlined text-base" aria-hidden="true">account_circle</span>My profile</a>
                 <a href="my-claims.html" role="menuitem" class="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-slate-50"><span class="material-symbols-outlined text-base" aria-hidden="true">luggage</span>My Trips</a>
                 <button id="tt-signout" role="menuitem" class="w-full text-left flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-danger-tint text-danger"><span class="material-symbols-outlined text-base" aria-hidden="true">logout</span>Sign out</button>
               </div>

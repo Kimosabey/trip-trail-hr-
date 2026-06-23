@@ -172,5 +172,21 @@ TT.supa = (function () {
     return true;
   }
 
-  return { client, sendMagicLink, signInPassword, signUp, signOut, currentUser, listMyClaims, listAllClaims, listApprovalQueue, getClaim, saveClaim, setStatus, markPaid, importUpdate, uploadReceipt, listReceipts, getReceiptUrl, deleteReceipt };
+  // ---- users (Admin screen + profile) ----
+  async function listUsers() {
+    const { data, error } = await client().from('users').select('*').order('created_at');
+    if (error) throw error; return data || [];
+  }
+  async function updateUser(id, fields) {
+    const { error } = await client().from('users').update(fields).eq('id', id); if (error) throw error;
+    return true;
+  }
+  async function updateMyProfile(fields) {
+    const { data: { user } } = await client().auth.getUser();
+    const { role, ...safe } = fields;        // never let the profile path change role
+    const { error } = await client().from('users').update(safe).eq('id', user.id); if (error) throw error;
+    return true;
+  }
+
+  return { client, sendMagicLink, signInPassword, signUp, signOut, currentUser, listMyClaims, listAllClaims, listApprovalQueue, getClaim, saveClaim, setStatus, markPaid, importUpdate, uploadReceipt, listReceipts, getReceiptUrl, deleteReceipt, listUsers, updateUser, updateMyProfile };
 })();

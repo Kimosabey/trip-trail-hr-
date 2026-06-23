@@ -33,6 +33,30 @@ TT.api = (function () {
       return TT.supa.currentUser();
     },
 
+    // ---- users (Admin screen + profile) ----
+    async listUsers() {
+      if (mock()) { await delay(); return clone(TT.mock.users); }
+      return TT.supa.listUsers();
+    },
+    async updateUser(id, fields) {
+      if (mock()) {
+        await delay();
+        const u = TT.mock.users.find(x => x.id === id);
+        if (u) Object.assign(u, fields);
+        return true;
+      }
+      return TT.supa.updateUser(id, fields);
+    },
+    async updateMyProfile(fields) {
+      if (mock()) {
+        await delay();
+        const { role, ...safe } = fields;   // role never changes via profile
+        Object.assign(curUser(), safe);
+        return true;
+      }
+      return TT.supa.updateMyProfile(fields);
+    },
+
     // ---- claims ----
     async listMyClaims() {
       if (mock()) {

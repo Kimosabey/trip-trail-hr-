@@ -163,3 +163,16 @@ end $$;
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- prevent non-HR users from changing their own role (profile page updates own row)
+create or replace function public.guard_user_role()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if new.role is distinct from old.role and coalesce(public.my_role(), 'employee') <> 'hr_admin' then
+    new.role := old.role;
+  end if;
+  return new;
+end $$;
+drop trigger if exists users_guard_role on public.users;
+create trigger users_guard_role before update on public.users
+  for each row execute function public.guard_user_role();

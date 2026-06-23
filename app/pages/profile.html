@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile — TripTrail</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script src="../assets/js/tailwind-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/app.css" />
+</head>
+<body class="bg-background text-on-surface">
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <header id="tt-nav"></header>
+
+  <main id="main" class="max-w-container mx-auto px-4 sm:px-8 py-8">
+    <h1 class="text-3xl font-bold tracking-tight">My Profile</h1>
+    <p class="text-on-surface-variant mb-6">Keep your details up to date — they auto-fill your travel reports.</p>
+
+    <form id="profile-form" class="tt-card p-5 max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium mb-1" for="full_name">Full name</label>
+        <input id="full_name" class="w-full h-12 rounded-md border border-slate-200 bg-surface px-3" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1" for="designation">Designation</label>
+        <input id="designation" class="w-full h-12 rounded-md border border-slate-200 bg-surface px-3" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1" for="emp_code">Employee code</label>
+        <input id="emp_code" class="w-full h-12 rounded-md border border-slate-200 bg-surface px-3" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1" for="department">Department</label>
+        <input id="department" class="w-full h-12 rounded-md border border-slate-200 bg-surface px-3" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1" for="place_of_work">Place of work</label>
+        <input id="place_of_work" class="w-full h-12 rounded-md border border-slate-200 bg-surface px-3" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1" for="email">Email</label>
+        <input id="email" disabled class="w-full h-12 rounded-md border border-slate-200 bg-slate-50 px-3 text-on-surface-variant" />
+      </div>
+      <div class="sm:col-span-2 flex items-center gap-3 pt-2">
+        <span id="role-pill"></span>
+        <button type="submit" class="tt-tap tt-press ml-auto inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-semibold px-5 rounded-md">
+          <span class="material-symbols-outlined" aria-hidden="true">save</span>Save changes
+        </button>
+      </div>
+    </form>
+  </main>
+
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/lib/supabaseClient.js"></script>
+  <script src="../assets/js/lib/format.js"></script>
+  <script src="../assets/js/lib/mockData.js"></script>
+  <script src="../assets/js/lib/api.js"></script>
+  <script src="../assets/js/lib/session.js"></script>
+  <script src="../assets/js/lib/auth.js"></script>
+  <script src="../assets/js/components/statusBadge.js"></script>
+  <script src="../assets/js/components/toast.js"></script>
+  <script src="../assets/js/components/nav.js"></script>
+  <script src="../assets/js/pages/profile.js"></script>
+</body>
+</html>

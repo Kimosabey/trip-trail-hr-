@@ -33,3 +33,19 @@ create policy "receipts_obj_insert" on storage.objects for insert to authenticat
   with check (bucket_id = 'receipts' and public.can_see_claim(split_part(name, '/', 2)));
 create policy "receipts_obj_delete" on storage.objects for delete to authenticated
   using (bucket_id = 'receipts' and public.can_see_claim(split_part(name, '/', 2)));
+
+-- ============================================================
+-- 2) USERS — prevent self role-escalation (profile page may update own row)
+-- ============================================================
+create or replace function public.guard_user_role()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  -- only HR may change a role; for anyone else, keep the existing role
+  if new.role is distinct from old.role and coalesce(public.my_role(), 'employee') <> 'hr_admin' then
+    new.role := old.role;
+  end if;
+  return new;
+end $$;
+drop trigger if exists users_guard_role on public.users;
+create trigger users_guard_role before update on public.users
+  for each row execute function public.guard_user_role();
