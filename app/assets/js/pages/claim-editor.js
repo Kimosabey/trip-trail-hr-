@@ -13,6 +13,14 @@
 
   // ---------- load (edit existing or fresh) ----------
   const user = await TT.api.currentUser();
+  let limits = null;
+  try { limits = await TT.api.getLimits(user.grade); } catch (e) { /* non-fatal */ }
+  if (limits) {
+    const h = document.getElementById('limit-hint');
+    if (h) { h.querySelector('span:last-child').textContent =
+      `Daily Allowance over ₹${limits.max_da} or Lodging over ₹${limits.max_lodging} (your ${user.grade} eligibility) are highlighted.`;
+      h.classList.remove('hidden'); }
+  }
   if (editId) {
     claim = await TT.api.getClaim(editId);
     document.getElementById('page-title').textContent = 'Edit Travel Report';
@@ -129,6 +137,7 @@
       const rt = TT.calc.rowTotal(it);
       tr.querySelector('[data-rowtotal]').textContent = TT.format.money(rt);
       grand += rt;
+      markLimit(tr, it);
     });
 
     const adv = Number(advEl.value || 0);
@@ -136,6 +145,19 @@
     document.getElementById('t-adv').textContent = TT.format.money(adv);
     document.getElementById('t-bal').textContent = TT.format.money(TT.calc.balanceDue(grand, adv));
   }
+  // flag DA / lodging cells that exceed the employee's grade eligibility (non-blocking)
+  function markLimit(tr, it) {
+    if (!limits) return;
+    const set = (k, max) => {
+      const el = tr.querySelector(`[data-k="${k}"]`); if (!el) return;
+      const over = max != null && Number(it[k] || 0) > Number(max);
+      el.classList.toggle('limit-warn', over);
+      el.title = over ? `Exceeds eligibility (max ₹${max})` : '';
+    };
+    set('daily_allowance', limits.max_da);
+    set('lodging', limits.max_lodging);
+  }
+
   advEl.addEventListener('input', recalc);
 
   // ---------- receipts ----------

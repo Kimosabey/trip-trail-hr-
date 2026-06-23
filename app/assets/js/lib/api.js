@@ -57,6 +57,16 @@ TT.api = (function () {
       return TT.supa.updateMyProfile(fields);
     },
 
+    // ---- eligibility limits ----
+    async getLimits(grade) {
+      if (mock()) {
+        await delay();
+        const map = { E1: { max_da: 800, max_lodging: 1500 }, E2: { max_da: 1000, max_lodging: 2500 }, M1: { max_da: 1500, max_lodging: 3500 }, M2: { max_da: 2000, max_lodging: 5000 } };
+        return map[grade] || null;
+      }
+      return TT.supa.getLimits(grade);
+    },
+
     // ---- claims ----
     async listMyClaims() {
       if (mock()) {

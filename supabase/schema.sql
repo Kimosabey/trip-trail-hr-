@@ -104,6 +104,13 @@ create table if not exists public.approvals (
 );
 create index if not exists idx_ap_claim on public.approvals(claim_id);
 
+-- ---------- eligibility limits per grade (DA / lodging caps) ----------
+create table if not exists public.grade_limits (
+  grade        text primary key,
+  max_da       numeric(12,2),
+  max_lodging  numeric(12,2)
+);
+
 -- ---------- totals engine (mirrors the spreadsheet formulas) ----------
 create or replace function public.recompute_claim_totals(p_claim text)
 returns void language plpgsql as $$

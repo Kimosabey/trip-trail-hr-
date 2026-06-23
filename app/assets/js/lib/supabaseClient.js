@@ -187,6 +187,11 @@ TT.supa = (function () {
     const { error } = await client().from('users').update(safe).eq('id', user.id); if (error) throw error;
     return true;
   }
+  async function getLimits(grade) {
+    if (!grade) return null;
+    const { data, error } = await client().from('grade_limits').select('*').eq('grade', grade).maybeSingle();
+    if (error) throw error; return data || null;
+  }
 
-  return { client, sendMagicLink, signInPassword, signUp, signOut, currentUser, listMyClaims, listAllClaims, listApprovalQueue, getClaim, saveClaim, setStatus, markPaid, importUpdate, uploadReceipt, listReceipts, getReceiptUrl, deleteReceipt, listUsers, updateUser, updateMyProfile };
+  return { client, sendMagicLink, signInPassword, signUp, signOut, currentUser, listMyClaims, listAllClaims, listApprovalQueue, getClaim, saveClaim, setStatus, markPaid, importUpdate, uploadReceipt, listReceipts, getReceiptUrl, deleteReceipt, listUsers, updateUser, updateMyProfile, getLimits };
 })();

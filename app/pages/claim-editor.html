@@ -18,6 +18,7 @@
     .cell-num:focus { background: var(--tt-primary-tint); outline: 1px solid var(--tt-primary); }
     .cell-txt { width: 100%; background: transparent; border: 0; padding: 6px 4px; border-radius: 6px; }
     .cell-txt:focus { background: var(--tt-primary-tint); outline: 1px solid var(--tt-primary); }
+    .limit-warn { outline: 1.5px solid var(--tt-warning) !important; background: var(--tt-warning-tint) !important; border-radius: 6px; }
   </style>
 </head>
 <body class="bg-background text-on-surface pb-36 sm:pb-28">
@@ -102,6 +103,7 @@
         </table>
       </div>
       <p class="text-xs text-on-surface-variant mt-2">Local Conv. fills automatically from the Local Conveyance section below.</p>
+      <p id="limit-hint" class="text-xs text-warning mt-1 hidden flex items-center gap-1"><span class="material-symbols-outlined text-sm" aria-hidden="true">warning</span><span></span></p>
       <button id="add-li" class="tt-press mt-3 inline-flex items-center gap-2 text-primary font-semibold border border-dashed border-primary/40 rounded-md px-4 py-2 hover:bg-primary-tint">
         <span class="material-symbols-outlined" aria-hidden="true">add</span>Add journey row
       </button>

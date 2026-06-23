@@ -49,3 +49,22 @@ end $$;
 drop trigger if exists users_guard_role on public.users;
 create trigger users_guard_role before update on public.users
   for each row execute function public.guard_user_role();
+
+-- ============================================================
+-- 3) ELIGIBILITY LIMITS per grade (Daily Allowance / Lodging caps)
+-- ============================================================
+create table if not exists public.grade_limits (
+  grade        text primary key,
+  max_da       numeric(12,2),
+  max_lodging  numeric(12,2)
+);
+alter table public.grade_limits enable row level security;
+drop policy if exists gl_read  on public.grade_limits;
+drop policy if exists gl_write on public.grade_limits;
+create policy gl_read  on public.grade_limits for select to authenticated using (true);
+create policy gl_write on public.grade_limits for all
+  using (public.my_role() = 'hr_admin') with check (public.my_role() = 'hr_admin');
+
+insert into public.grade_limits (grade, max_da, max_lodging) values
+  ('E1', 800, 1500), ('E2', 1000, 2500), ('M1', 1500, 3500), ('M2', 2000, 5000)
+on conflict (grade) do nothing;
