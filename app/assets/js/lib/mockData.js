@@ -9,7 +9,9 @@ TT.mock = {
   users: [
     { id: 'u-ragha', full_name: 'Raghavendra D', designation: 'HR',              emp_code: 'EMP001', department: 'HR',          place_of_work: 'Mysuru',    role: 'hr_admin', grade: 'M2' },
     { id: 'u-amit',  full_name: 'Amit Sharma',   designation: 'Sales Executive', emp_code: 'EMP010', department: 'Sales',       place_of_work: 'Bengaluru', role: 'employee', grade: 'E1' },
-    { id: 'u-priya', full_name: 'Priya Desai',   designation: 'Marketing Lead',  emp_code: 'EMP011', department: 'Marketing',   place_of_work: 'Mysuru',    role: 'approver', grade: 'M1' },
+    { id: 'u-hod',   full_name: 'Devi Rao',      designation: 'Head of Sales',   emp_code: 'EMP100', department: 'Sales',       place_of_work: 'Bengaluru', role: 'hod',      grade: 'M1' },
+    { id: 'u-chk',   full_name: 'Suresh K',      designation: 'Finance Checker', emp_code: 'EMP101', department: 'Finance',     place_of_work: 'Mysuru',    role: 'checker',  grade: 'M1' },
+    { id: 'u-priya', full_name: 'Priya Desai',   designation: 'Approver',        emp_code: 'EMP011', department: 'Management',  place_of_work: 'Mysuru',    role: 'approver', grade: 'M1' },
     { id: 'u-rahul', full_name: 'Rahul Singh',   designation: 'Engineer',        emp_code: 'EMP012', department: 'Engineering', place_of_work: 'Pune',      role: 'employee', grade: 'E2' },
   ],
 
@@ -40,6 +42,7 @@ TT.mock = {
     // other employees so HR clearly sees more than their own
     { id: 'TR-2026-03-901', user_id: 'u-amit',  employee_name: 'Amit Sharma', department: 'Sales',       purpose: 'Client Meeting', place_of_visit: 'Mumbai', trip_from: '2026-03-10', trip_to: '2026-03-12', advance_received: 5000, status: 'submitted',    line_items: [], conveyance: [], receipts: [], approvals: [] },
     { id: 'TR-2026-03-903', user_id: 'u-rahul', employee_name: 'Rahul Singh', department: 'Engineering', purpose: 'Site Visit',     place_of_visit: 'Pune',   trip_from: '2026-03-05', trip_to: '2026-03-06', advance_received: 0,    status: 'checked',      line_items: [], conveyance: [], receipts: [], approvals: [] },
+    { id: 'TR-2026-03-905', user_id: 'u-amit',  employee_name: 'Amit Sharma', department: 'Sales',       purpose: 'Demo Expo',      place_of_visit: 'Chennai', trip_from: '2026-03-15', trip_to: '2026-03-16', advance_received: 0,    status: 'hod_approved', line_items: [], conveyance: [], receipts: [], approvals: [] },
   ],
 };
 
@@ -48,6 +51,6 @@ TT.mock.seedClaims.forEach(c => {
   c.grand_total = c.line_items && c.line_items.length
     ? TT.calc.grandTotal(c.line_items)
     : ({ 'TR-2026-02-771': 3210, 'TR-2026-02-654': 1850, 'TR-2026-02-510': 5920, 'TR-2026-01-409': 4100,
-         'TR-2026-03-901': 15400, 'TR-2026-03-903': 8500 }[c.id] || 0);
+         'TR-2026-03-901': 15400, 'TR-2026-03-903': 8500, 'TR-2026-03-905': 4200 }[c.id] || 0);
   c.balance_due = TT.calc.balanceDue(c.grand_total, c.advance_received);
 });
