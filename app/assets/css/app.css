@@ -91,3 +91,15 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 
 /* Minimum tap target (WCAG 2.5.5) */
 button, .tt-tap, a.tt-tap { min-height: 44px; }
+
+/* --- Print / Save-PDF (claim detail looks like the official form) --- */
+@media print {
+  #tt-nav, #action-bar, .skip-link, .no-print, #edit-box, nav[aria-label="Breadcrumb"] { display: none !important; }
+  body { background: #fff !important; color: #000; }
+  main { max-width: 100% !important; padding: 0 12px !important; }
+  .grid { display: block !important; }                 /* stack the 2-column layout */
+  .tt-card { box-shadow: none !important; border: 1px solid #bbb !important; break-inside: avoid; margin-bottom: 12px; }
+  #print-title { display: block !important; font-weight: 700; font-size: 18px; text-align: center; margin: 0 0 12px; }
+  a[href]::after { content: ""; }                       /* don't print URLs */
+  @page { margin: 14mm; }
+}

@@ -4,6 +4,8 @@
 
   const id = new URLSearchParams(location.search).get('id');
   const body = document.getElementById('claim-body');
+  const printBtn = document.getElementById('btn-print');
+  if (printBtn) printBtn.addEventListener('click', () => window.print());
 
   // workflow stages in order
   const STAGES = [

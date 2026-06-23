@@ -21,7 +21,13 @@
       <a href="my-claims.html" class="hover:text-primary">My Trips</a>
       <span aria-hidden="true"> › </span><span id="bc-id">Claim</span>
     </nav>
-    <h1 class="text-3xl font-bold tracking-tight mb-6">Expense Claim Review</h1>
+    <div class="flex items-center justify-between gap-3 mb-6">
+      <h1 class="text-3xl font-bold tracking-tight">Expense Claim Review</h1>
+      <button id="btn-print" class="no-print tt-press inline-flex items-center gap-2 px-4 h-11 rounded-md border border-slate-200 bg-surface font-semibold hover:bg-slate-50">
+        <span class="material-symbols-outlined" aria-hidden="true">print</span>Print / Save PDF
+      </button>
+    </div>
+    <div id="print-title" class="hidden">RANGSONS LLP — Travel &amp; Local Conveyance Report</div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- left: claim body -->
