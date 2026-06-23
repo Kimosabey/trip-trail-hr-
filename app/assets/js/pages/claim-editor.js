@@ -45,21 +45,21 @@
     const tr = document.createElement('tr');
     tr.className = 'tt-row-enter border-b border-slate-100';
     tr.innerHTML = `
-      <td class="px-2 py-1"><input type="date" class="cell-txt" data-k="item_date" value="${it.item_date || ''}"></td>
-      <td class="px-2 py-1"><input class="cell-txt" data-k="journey_particulars" placeholder="From → To" value="${it.journey_particulars || ''}"></td>
-      <td class="px-2 py-1">
+      <td class="px-2 py-1" data-label="Date"><input type="date" class="cell-txt" data-k="item_date" value="${it.item_date || ''}"></td>
+      <td class="px-2 py-1" data-label="Journey"><input class="cell-txt" data-k="journey_particulars" placeholder="From → To" value="${it.journey_particulars || ''}"></td>
+      <td class="px-2 py-1" data-label="Mode">
         <select class="cell-txt" data-k="mode_of_transport">
           ${TRANSPORT.map(m => `<option ${m === it.mode_of_transport ? 'selected' : ''}>${m}</option>`).join('')}
         </select>
       </td>
-      <td class="px-2 py-1"><input type="number" min="0" class="cell-num" data-k="fare" value="${it.fare || ''}"></td>
-      <td class="px-2 py-1"><input type="number" min="0" class="cell-num" data-k="daily_allowance" value="${it.daily_allowance || ''}"></td>
-      <td class="px-2 py-1"><input type="number" min="0" class="cell-num" data-k="lodging" value="${it.lodging || ''}"></td>
-      <td class="px-2 py-1 text-right text-on-surface-variant" data-conv>—</td>
-      <td class="px-2 py-1"><input class="cell-txt" data-k="misc_details" placeholder="Details" value="${it.misc_details || ''}"></td>
-      <td class="px-2 py-1"><input type="number" min="0" class="cell-num" data-k="misc_amount" value="${it.misc_amount || ''}"></td>
-      <td class="px-2 py-1 text-right font-semibold" data-rowtotal>₹0</td>
-      <td class="px-2 py-1 text-center">
+      <td class="px-2 py-1" data-label="Fare ₹"><input type="number" min="0" class="cell-num" data-k="fare" value="${it.fare || ''}"></td>
+      <td class="px-2 py-1" data-label="Daily Allowance ₹"><input type="number" min="0" class="cell-num" data-k="daily_allowance" value="${it.daily_allowance || ''}"></td>
+      <td class="px-2 py-1" data-label="Lodging ₹"><input type="number" min="0" class="cell-num" data-k="lodging" value="${it.lodging || ''}"></td>
+      <td class="px-2 py-1 text-right text-on-surface-variant" data-label="Local Conv. ₹" data-conv>—</td>
+      <td class="px-2 py-1" data-label="Misc Details"><input class="cell-txt" data-k="misc_details" placeholder="Details" value="${it.misc_details || ''}"></td>
+      <td class="px-2 py-1" data-label="Misc ₹"><input type="number" min="0" class="cell-num" data-k="misc_amount" value="${it.misc_amount || ''}"></td>
+      <td class="px-2 py-1 text-right font-semibold" data-label="Row Total ₹" data-rowtotal>₹0</td>
+      <td class="px-2 py-1 text-center" data-label="">
         <button class="text-on-surface-variant hover:text-danger" aria-label="Remove row" data-remove>
           <span class="material-symbols-outlined">delete</span>
         </button>
@@ -77,21 +77,21 @@
     const tr = document.createElement('tr');
     tr.className = 'tt-row-enter border-b border-slate-100';
     tr.innerHTML = `
-      <td class="px-2 py-1"><input type="date" class="cell-txt" data-k="item_date" value="${r.item_date || ''}"></td>
-      <td class="px-2 py-1"><input class="cell-txt" data-k="from_place" placeholder="From" value="${r.from_place || ''}"></td>
-      <td class="px-2 py-1"><input class="cell-txt" data-k="to_place" placeholder="To" value="${r.to_place || ''}"></td>
-      <td class="px-2 py-1">
+      <td class="px-2 py-1" data-label="Date"><input type="date" class="cell-txt" data-k="item_date" value="${r.item_date || ''}"></td>
+      <td class="px-2 py-1" data-label="From"><input class="cell-txt" data-k="from_place" placeholder="From" value="${r.from_place || ''}"></td>
+      <td class="px-2 py-1" data-label="To"><input class="cell-txt" data-k="to_place" placeholder="To" value="${r.to_place || ''}"></td>
+      <td class="px-2 py-1" data-label="Mode">
         <select class="cell-txt" data-k="mode">${CONV_MODES.map(m => `<option ${m === r.mode ? 'selected' : ''}>${m}</option>`).join('')}</select>
       </td>
-      <td class="px-2 py-1"><input type="number" min="0" class="cell-num" data-k="amount" value="${r.amount || ''}"></td>
-      <td class="px-2 py-1 text-center">
+      <td class="px-2 py-1" data-label="Amount ₹"><input type="number" min="0" class="cell-num" data-k="amount" value="${r.amount || ''}"></td>
+      <td class="px-2 py-1 text-center" data-label="Bill?">
         <label class="inline-flex items-center gap-1 cursor-pointer text-xs">
           <input type="checkbox" data-k="has_bill" ${r.has_bill ? 'checked' : ''} class="rounded border-slate-300 text-primary">
           <span>Bill</span>
         </label>
       </td>
-      <td class="px-2 py-1"><input class="cell-txt" data-k="remarks" placeholder="Remarks" value="${r.remarks || ''}"></td>
-      <td class="px-2 py-1 text-center">
+      <td class="px-2 py-1" data-label="Remarks"><input class="cell-txt" data-k="remarks" placeholder="Remarks" value="${r.remarks || ''}"></td>
+      <td class="px-2 py-1 text-center" data-label="">
         <button class="text-on-surface-variant hover:text-danger" aria-label="Remove row" data-remove>
           <span class="material-symbols-outlined">delete</span>
         </button>

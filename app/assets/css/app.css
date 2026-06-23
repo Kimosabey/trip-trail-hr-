@@ -84,6 +84,24 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 .tt-press:active { transform: scale(0.98); }
 .tt-card, .tt-press, button { transition: box-shadow 150ms ease, background-color 150ms ease, transform 120ms ease; }
 
+/* --- Responsive editor tables → stacked cards on phones (tt-resp-table) --- */
+@media (max-width: 640px) {
+  .tt-resp-table { min-width: 0 !important; }
+  .tt-resp-table thead { display: none; }
+  .tt-resp-table, .tt-resp-table tbody, .tt-resp-table tr, .tt-resp-table td { display: block; width: 100%; }
+  .tt-resp-table tr {
+    border: 1px solid var(--tt-border); border-radius: 12px;
+    padding: 8px 10px; margin-bottom: 10px; background: var(--tt-surface);
+  }
+  .tt-resp-table td { display: flex; align-items: center; gap: 10px; padding: 5px 0; border: 0; text-align: left !important; }
+  .tt-resp-table td::before {
+    content: attr(data-label); flex: 0 0 42%;
+    font-size: 12px; font-weight: 600; color: var(--tt-text-muted);
+  }
+  .tt-resp-table td[data-label=""]::before { content: ""; flex: 0; }
+  .tt-resp-table .cell-num, .tt-resp-table .cell-txt { text-align: left; background: var(--tt-bg); }
+}
+
 /* Respect reduced motion (WCAG 2.3.3 / motion sensitivity) */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
