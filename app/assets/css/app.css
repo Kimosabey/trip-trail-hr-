@@ -10,15 +10,14 @@ body {
   -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
 }
 
-/* Wide tables stay swipe/drag scrollable, but the scrollbar is hidden (cleaner look) */
-.overflow-x-auto, .overflow-y-auto, .overflow-auto {
-  -webkit-overflow-scrolling: touch;
+/* Hide ALL scrollbars site-wide (page + any container) while keeping scroll working */
+* {
   scrollbar-width: none;            /* Firefox */
   -ms-overflow-style: none;         /* old Edge/IE */
 }
-.overflow-x-auto::-webkit-scrollbar,
-.overflow-y-auto::-webkit-scrollbar,
-.overflow-auto::-webkit-scrollbar { display: none; }  /* Chrome/Safari/Edge */
+*::-webkit-scrollbar { width: 0; height: 0; display: none; }  /* Chrome/Safari/Edge */
+html, body { -webkit-overflow-scrolling: touch; }
+.overflow-x-auto, .overflow-y-auto, .overflow-auto { -webkit-overflow-scrolling: touch; }
 
 /* Inputs: keep font-size ≥16px on mobile so iOS doesn't zoom the page on focus */
 @media (max-width: 640px) {
