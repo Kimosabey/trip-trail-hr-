@@ -30,14 +30,18 @@ tailwind.config = {
         // --- semantic status colors (paired with text/icon, never color-only) ---
         success: '#16a34a',
         'success-tint': '#dcfce7',
+        'success-text': '#15803d',
         warning: '#d97706',
         'warning-tint': '#ffedd5',
+        'warning-text': '#b45309',
         danger: '#dc2626',
         'danger-tint': '#fee2e2',
+        'danger-text': '#b91c1c',
         info: '#4f46e5',
         'info-tint': '#e0e7ff',
         teal: '#0d9488',
         'teal-tint': '#ccfbf1',
+        'teal-text': '#0f766e',
         // slate scale for neutral badges/text
         slate: {
           50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1',

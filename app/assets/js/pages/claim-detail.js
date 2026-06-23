@@ -104,7 +104,7 @@
             <td class="py-2 pr-2">${r.to_place || ''}</td>
             <td class="py-2 pr-2">${r.mode || ''}</td>
             <td class="py-2 pr-2 text-right">${TT.format.money(r.amount)}</td>
-            <td class="py-2 pr-2">${r.has_bill ? '<span class="tt-badge bg-success-tint text-success"><span class="material-symbols-outlined" aria-hidden="true">attachment</span>Bill</span>' : '<span class="text-on-surface-variant">No Bill</span>'}</td>
+            <td class="py-2 pr-2">${r.has_bill ? '<span class="tt-badge bg-success-tint text-success-text"><span class="material-symbols-outlined" aria-hidden="true">attachment</span>Bill</span>' : '<span class="text-on-surface-variant">No Bill</span>'}</td>
             <td class="py-2 pr-2 text-on-surface-variant">${r.remarks || '—'}</td>
           </tr>`).join('')}</tbody>
         </table>
@@ -158,7 +158,7 @@
         <p class="text-xs text-on-surface-variant">${ap ? (ap.actor || '') + (ap.acted_at ? ' · ' + TT.format.date(ap.acted_at) : '') : ''}</p>
       </div>
     </li>`;
-  }).join('') + (rejected ? `<li class="flex gap-3"><span class="material-symbols-outlined text-danger">cancel</span><p class="font-medium text-danger">Rejected</p></li>` : '');
+  }).join('') + (rejected ? `<li class="flex gap-3"><span class="material-symbols-outlined text-danger-text">cancel</span><p class="font-medium text-danger-text">Rejected</p></li>` : '');
 
   // ---------- editable box (owner + draft/returned) ----------
   if (claim.user_id === user.id && ['draft', 'returned'].includes(claim.status)) {

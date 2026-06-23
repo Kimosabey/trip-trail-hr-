@@ -29,9 +29,9 @@
     { key: 'submitted', label: 'Submitted', icon: 'schedule', cls: 'bg-slate-100 text-slate-600' },
     { key: 'hod_approved', label: 'HOD Approved', icon: 'done', cls: 'bg-primary-tint text-primary-dark' },
     { key: 'checked', label: 'Checked', icon: 'fact_check', cls: 'bg-info-tint text-info' },
-    { key: 'approved', label: 'Approved', icon: 'verified', cls: 'bg-success-tint text-success' },
-    { key: 'paid', label: 'Paid', icon: 'paid', cls: 'bg-teal-tint text-teal' },
-    { key: 'rejected', label: 'Rejected', icon: 'cancel', cls: 'bg-danger-tint text-danger' },
+    { key: 'approved', label: 'Approved', icon: 'verified', cls: 'bg-success-tint text-success-text' },
+    { key: 'paid', label: 'Paid', icon: 'paid', cls: 'bg-teal-tint text-teal-text' },
+    { key: 'rejected', label: 'Rejected', icon: 'cancel', cls: 'bg-danger-tint text-danger-text' },
   ];
   const pipeEl = document.getElementById('pipeline');
   if (pipeEl) {
@@ -83,7 +83,7 @@
         <td class="px-4 py-3">${TT.statusBadge.html(c.status)}</td>
         <td class="px-4 py-3 whitespace-nowrap">
           <a href="claim-detail.html?id=${encodeURIComponent(c.id)}" class="text-primary font-medium hover:underline">View</a>
-          ${c.status === 'approved' ? `<button class="ml-3 text-teal font-medium hover:underline" data-pay="${c.id}">Mark Paid</button>` : ''}
+          ${c.status === 'approved' ? `<button class="ml-3 text-teal-text font-medium hover:underline" data-pay="${c.id}">Mark Paid</button>` : ''}
         </td>
       </tr>`).join('');
 

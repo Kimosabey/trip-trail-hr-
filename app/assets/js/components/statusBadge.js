@@ -3,13 +3,13 @@ window.TT = window.TT || {};
 
 TT.statusBadge = (function () {
   const MAP = {
-    submitted:    { label: 'Submitted',    icon: 'schedule',      cls: 'bg-slate-100 text-slate-600' },
+    submitted:    { label: 'Submitted',    icon: 'schedule',      cls: 'bg-slate-100 text-slate-700' },
     hod_approved: { label: 'HOD Approved',  icon: 'done',          cls: 'bg-primary-tint text-primary-dark' },
     checked:      { label: 'Checked',       icon: 'fact_check',    cls: 'bg-info-tint text-info' },
-    approved:     { label: 'Approved',      icon: 'verified',      cls: 'bg-success-tint text-success' },
-    paid:         { label: 'Paid',          icon: 'paid',          cls: 'bg-teal-tint text-teal' },
-    rejected:     { label: 'Rejected',      icon: 'cancel',        cls: 'bg-danger-tint text-danger' },
-    draft:        { label: 'Draft',         icon: 'edit_note',     cls: 'bg-slate-100 text-slate-500' },
+    approved:     { label: 'Approved',      icon: 'verified',      cls: 'bg-success-tint text-success-text' },
+    paid:         { label: 'Paid',          icon: 'paid',          cls: 'bg-teal-tint text-teal-text' },
+    rejected:     { label: 'Rejected',      icon: 'cancel',        cls: 'bg-danger-tint text-danger-text' },
+    draft:        { label: 'Draft',         icon: 'edit_note',     cls: 'bg-slate-100 text-slate-600' },
   };
 
   /** Returns HTML string for a status pill. */

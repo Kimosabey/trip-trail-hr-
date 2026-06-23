@@ -102,7 +102,7 @@
     const days = (d) => d ? Math.max(0, Math.floor((Date.now() - new Date(d).getTime()) / 86400000)) : 0;
     document.getElementById('advances').innerHTML = adv.length ? adv
       .sort((a, b) => days(b.trip_to) - days(a.trip_to))
-      .map(c => { const ag = days(c.trip_to); const cls = ag > 30 ? 'text-danger' : ag > 7 ? 'text-warning' : 'text-on-surface-variant';
+      .map(c => { const ag = days(c.trip_to); const cls = ag > 30 ? 'text-danger-text' : ag > 7 ? 'text-warning-text' : 'text-on-surface-variant';
         return `<div class="flex justify-between border-b border-slate-100 pb-1">
           <span>${c.employee_name} <span class="text-on-surface-variant">· ${c.purpose}</span></span>
           <span class="flex items-center gap-3"><span class="${cls} text-xs">${ag}d</span><span class="font-medium">${TT.format.money(c.advance_received)}</span></span></div>`;

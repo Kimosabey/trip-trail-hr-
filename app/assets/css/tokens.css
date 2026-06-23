@@ -17,6 +17,12 @@
   --tt-info: #4f46e5;
   --tt-teal: #0d9488;
 
+  /* AA-safe text shades for use ON light tints / white (≥4.5:1 small text) */
+  --tt-success-text: #15803d;
+  --tt-warning-text: #b45309;
+  --tt-danger-text: #b91c1c;
+  --tt-teal-text: #0f766e;
+
   --tt-radius: 0.5rem;
   --tt-radius-lg: 1rem;
   --tt-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.05);
