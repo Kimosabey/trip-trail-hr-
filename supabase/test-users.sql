@@ -5,6 +5,7 @@
 --     kaushik@lingotran.com          (HOD)
 --     dhanyashree.hp@lingotran.com   (Checker)
 --     raghav.s@lingotran.com         (Approver)
+--     deepaksomayya@gmail.com        (Employee #2)
 --   (raghavendra.d@lingotran.com = HR and harshan.aiyappa@gmail.com = employee already exist)
 --
 -- STEP 2: run this in the SQL Editor to assign roles + profiles.
@@ -15,7 +16,8 @@ update public.users set role='approver', full_name='Raghav S',       designation
 
 -- existing accounts (idempotent)
 update public.users set role='hr_admin', full_name='Raghavendra D',  designation='HR',              department='HR',    emp_code='EMP001', grade='M2', place_of_work='Mysuru'    where email='raghavendra.d@lingotran.com';
-update public.users set role='employee', full_name='Harshan Aiyappa', designation='Sales Executive', department='Sales', emp_code='EMP010', grade='E1', place_of_work='Bengaluru' where email='harshan.aiyappa@gmail.com';
+update public.users set role='employee', full_name='Harshan Aiyappa', designation='Sales Executive', department='Sales',       emp_code='EMP010', grade='E1', place_of_work='Bengaluru' where email='harshan.aiyappa@gmail.com';
+update public.users set role='employee', full_name='Deepak Somayya',  designation='Engineer',        department='Engineering', emp_code='EMP011', grade='E2', place_of_work='Mysuru'    where email='deepaksomayya@gmail.com';
 
 -- confirm
 select email, full_name, role, department from public.users order by
