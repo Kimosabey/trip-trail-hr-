@@ -24,6 +24,14 @@ the newer features need:
 - **3-day reminder (optional):** `remind_late_submissions()` — schedule via pg_cron (see the
   commented line at the end of the file).
 
+## Avoiding email rate-limit errors (`429 email rate limit exceeded`)
+These come ONLY from emails Supabase sends (magic link, signup confirmation, password reset);
+the free built-in sender is capped at a few/hour. To avoid:
+1. **Use password login + Auto-Confirm users** (default in this app) → no emails on normal sign-in.
+2. **Authentication → Providers → Email → turn OFF "Confirm email"** → adding staff sends no email.
+3. For real magic-link / password-reset at scale: **Authentication → SMTP Settings** → add a free
+   provider (Resend 3k/mo, Brevo 300/day, SendGrid, Mailgun). Replaces the tiny shared sender.
+
 ## 4. Auth
 - **Authentication → Providers → Email** is on by default (magic link). Done.
 - To make someone HR: after they sign in once, run in SQL Editor:
