@@ -43,10 +43,14 @@
         <span id="toggle-hint" class="text-on-surface-variant">New here?</span>
         <button id="toggle-mode" class="text-primary font-medium hover:underline">Create an account</button>
       </p>
+      <!-- Magic-link sign-in hidden for now (avoids free-tier email rate limits). Re-enable
+           once custom SMTP is configured. Password sign-in is the default.
       <div class="flex items-center gap-3 my-4"><span class="flex-1 h-px bg-slate-200"></span><span class="text-xs text-on-surface-variant">or</span><span class="flex-1 h-px bg-slate-200"></span></div>
       <button id="magic-btn" class="tt-tap tt-press w-full inline-flex items-center justify-center gap-2 border border-slate-200 bg-surface hover:bg-slate-50 font-semibold rounded-md text-on-surface-variant">
         <span class="material-symbols-outlined" aria-hidden="true">mail</span>Email me a sign-in link instead
       </button>
+      -->
+      <p class="text-xs text-on-surface-variant text-center mt-4">Trouble signing in? Contact HR to reset your password.</p>
 
       <div id="sent" class="hidden text-center mt-6 p-4 rounded-md bg-success-tint text-success-text">
         <span class="material-symbols-outlined text-3xl" aria-hidden="true">mark_email_read</span>
@@ -103,16 +107,35 @@
 
         if (APP_CONFIG.USE_MOCK) { TT.session.goHome(''); return; }
 
-        const op = mode === 'signin' ? TT.supa.signInPassword(v, pw) : TT.supa.signUp(v, pw);
-        op.then(function () { TT.session.goHome(''); })
-          .catch(function (e) {
-            console.error(e);
-            showErr((e && e.message) ? e.message : 'Could not sign in. Try again.');
-          });
+        const submitBtn = document.getElementById('primary-btn');
+        submitBtn.disabled = true;
+        if (mode === 'signin') {
+          TT.supa.signInPassword(v, pw)
+            .then(function () { TT.session.goHome(''); })
+            .catch(function (e) { submitBtn.disabled = false; showErr(friendly(e)); });
+        } else {
+          // sign up, then continue if a session was created (needs "Confirm email" OFF)
+          TT.supa.signUp(v, pw)
+            .then(function () { return TT.api.currentUser(); })
+            .then(function (u) {
+              if (u) { TT.session.goHome(''); }
+              else { submitBtn.disabled = false; showErr('Account created. If it doesn’t continue, ask HR to confirm it, then sign in.'); }
+            })
+            .catch(function (e) { submitBtn.disabled = false; showErr(friendly(e)); });
+        }
       });
 
-      // magic-link fallback
-      document.getElementById('magic-btn').addEventListener('click', function () {
+      function friendly(e) {
+        var m = (e && e.message) ? e.message : 'Something went wrong. Try again.';
+        if (/rate limit/i.test(m)) return 'Too many attempts right now. Wait a minute, or ask HR (email confirmation may need turning off).';
+        if (/invalid login/i.test(m)) return 'Wrong email or password.';
+        if (/already registered|already been registered/i.test(m)) return 'That email already has an account — switch to Sign in.';
+        return m;
+      }
+
+      // magic-link fallback (button currently hidden; guard so JS never breaks)
+      var magicBtn = document.getElementById('magic-btn');
+      if (magicBtn) magicBtn.addEventListener('click', function () {
         err.classList.add('hidden');
         const v = email.value.trim();
         if (!validEmail(v)) { showErr('Enter your email first, then request a link.'); email.focus(); return; }
@@ -121,7 +144,7 @@
           document.getElementById('sent-email').textContent = v;
           document.getElementById('sent').classList.remove('hidden');
           form.classList.add('hidden');
-        }).catch(function (e) { showErr((e && e.message) ? e.message : 'Could not send link.'); });
+        }).catch(function (e) { showErr(friendly(e)); });
       });
     })();
   </script>
