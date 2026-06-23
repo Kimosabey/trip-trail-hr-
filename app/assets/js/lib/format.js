@@ -25,6 +25,19 @@ TT.format = {
 };
 
 TT.csv = {
+  /** Escape one CSV field. */
+  esc(v) { return `"${String(v == null ? '' : v).replace(/"/g, '""')}"`; },
+  /** Build CSV text from headers + array-of-arrays. */
+  build(headers, rows) {
+    return [headers.map(TT.csv.esc).join(',')].concat(rows.map(r => r.map(TT.csv.esc).join(','))).join('\n');
+  },
+  /** Trigger a browser download of CSV text (UTF-8 BOM so ₹/names open cleanly in Excel). */
+  download(name, csv) {
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name; a.click();
+    URL.revokeObjectURL(a.href);
+  },
   /** Parse CSV text → array of row objects keyed by header. Handles quotes, "" escapes, commas, newlines. */
   parse(text) {
     const rows = []; let field = '', row = [], inQ = false;
