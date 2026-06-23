@@ -103,6 +103,33 @@ TT.api = (function () {
       return TT.supa.setStatus(id, status, comment);
     },
 
+    // ---- receipts ----
+    async uploadReceipt(claimId, file) {
+      if (mock()) {
+        await delay(150);
+        const c = store().find(x => x.id === claimId);
+        if (c) { (c.receipts = c.receipts || []).push({ id: 'r' + Date.now() + Math.floor(performance.now()), name: file.name, file_type: (file.type || '').includes('pdf') ? 'pdf' : 'image', storage_path: null }); persist(); }
+        return true;
+      }
+      return TT.supa.uploadReceipt(claimId, file);
+    },
+    async listReceipts(claimId) {
+      if (mock()) { await delay(); const c = store().find(x => x.id === claimId); return clone((c && c.receipts) || []); }
+      return TT.supa.listReceipts(claimId);
+    },
+    async getReceiptUrl(storagePath) {
+      if (mock()) return null;                 // mock keeps metadata only (no real file)
+      return TT.supa.getReceiptUrl(storagePath);
+    },
+    async deleteReceipt(id, storagePath) {
+      if (mock()) {
+        await delay();
+        for (const c of store()) { const i = (c.receipts || []).findIndex(r => r.id === id); if (i >= 0) { c.receipts.splice(i, 1); persist(); break; } }
+        return true;
+      }
+      return TT.supa.deleteReceipt(id, storagePath);
+    },
+
     /** Round-trip CSV import: update editable header fields of an existing claim. Returns true if found. */
     async importUpdate(id, fields) {
       if (mock()) {

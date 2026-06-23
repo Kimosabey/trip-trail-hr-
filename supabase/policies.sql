@@ -72,10 +72,11 @@ create policy cv_read on public.conveyance for select using (public.can_see_clai
 create policy cv_write on public.conveyance for all
   using (public.can_edit_claim(claim_id)) with check (public.can_edit_claim(claim_id));
 
--- receipts
-create policy rc_read on public.receipts for select using (public.can_see_claim(claim_id));
-create policy rc_write on public.receipts for all
-  using (public.can_edit_claim(claim_id)) with check (public.can_edit_claim(claim_id));
+-- receipts: anyone who can see the claim can attach/view/remove evidence
+-- (can_see_claim, not can_edit_claim, so receipts can be added after submit too)
+create policy rc_read   on public.receipts for select using (public.can_see_claim(claim_id));
+create policy rc_insert on public.receipts for insert with check (public.can_see_claim(claim_id));
+create policy rc_delete on public.receipts for delete using (public.can_see_claim(claim_id));
 
 -- approvals: anyone who can see the claim can read the trail; staff can add entries
 create policy ap_read on public.approvals for select using (public.can_see_claim(claim_id));

@@ -145,5 +145,32 @@ TT.supa = (function () {
     return (data || []).length > 0;
   }
 
-  return { client, sendMagicLink, signInPassword, signUp, signOut, currentUser, listMyClaims, listAllClaims, listApprovalQueue, getClaim, saveClaim, setStatus, markPaid, importUpdate };
+  // ---- receipts (Supabase Storage, private bucket 'receipts') ----
+  async function uploadReceipt(claimId, file) {
+    const safe = file.name.replace(/[^a-z0-9._-]+/gi, '_');
+    const path = `claims/${claimId}/${Date.now()}_${safe}`;
+    const { error: upErr } = await client().storage.from('receipts').upload(path, file, { upsert: false });
+    if (upErr) throw upErr;
+    const ftype = (file.type || '').includes('pdf') ? 'pdf' : 'image';
+    const { data, error } = await client().from('receipts')
+      .insert({ claim_id: claimId, name: file.name, storage_path: path, file_type: ftype }).select().single();
+    if (error) throw error;
+    return data;
+  }
+  async function listReceipts(claimId) {
+    const { data, error } = await client().from('receipts').select('*').eq('claim_id', claimId).order('uploaded_at');
+    if (error) throw error; return data || [];
+  }
+  async function getReceiptUrl(storagePath) {
+    if (!storagePath) return null;
+    const { data, error } = await client().storage.from('receipts').createSignedUrl(storagePath, 3600);
+    if (error) throw error; return data.signedUrl;
+  }
+  async function deleteReceipt(id, storagePath) {
+    if (storagePath) await client().storage.from('receipts').remove([storagePath]);
+    const { error } = await client().from('receipts').delete().eq('id', id); if (error) throw error;
+    return true;
+  }
+
+  return { client, sendMagicLink, signInPassword, signUp, signOut, currentUser, listMyClaims, listAllClaims, listApprovalQueue, getClaim, saveClaim, setStatus, markPaid, importUpdate, uploadReceipt, listReceipts, getReceiptUrl, deleteReceipt };
 })();

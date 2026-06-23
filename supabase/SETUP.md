@@ -13,8 +13,11 @@ In the dashboard → **SQL Editor**, run these files in order (paste & Run):
 3. `seed.sql`     — optional demo data (edit UUIDs first)
 
 ## 3. Storage for receipts
-- **Storage → New bucket** → name it `receipts` → Private.
-- (Policies for the bucket can be added later; uploads are wired in a follow-up.)
+Just run **`migrate-phase3.sql`** in the SQL Editor — it creates the private `receipts`
+bucket **and** its access policies (and fixes the receipts-table RLS so evidence can be
+attached after submit). No manual bucket creation needed.
+Files are stored at `claims/<claim_id>/<filename>`; the app shows them via short-lived
+signed URLs. Run this once (it's safe to re-run).
 
 ## 4. Auth
 - **Authentication → Providers → Email** is on by default (magic link). Done.

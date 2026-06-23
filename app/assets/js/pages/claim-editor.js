@@ -140,9 +140,10 @@
 
   // ---------- receipts ----------
   const recList = document.getElementById('rec-list');
-  function addReceiptTile(name, type) {
-    const id = 'rec' + (++recId);
-    const isPdf = type === 'pdf' || /\.pdf$/i.test(name);
+  const pendingFiles = [];   // new files to upload AFTER the claim is saved (need its id)
+
+  function receiptTile({ name, file_type, onRemove }) {
+    const isPdf = file_type === 'pdf' || /\.pdf$/i.test(name);
     const div = document.createElement('div');
     div.className = 'tt-row-enter relative w-28';
     div.innerHTML = `
@@ -150,20 +151,41 @@
         <span class="material-symbols-outlined text-3xl ${isPdf ? 'text-danger' : 'text-slate-400'}">${isPdf ? 'picture_as_pdf' : 'image'}</span>
       </div>
       <p class="text-xs mt-1 truncate" title="${name}">${name}</p>
-      <button class="absolute -top-2 -right-2 bg-surface border border-slate-200 rounded-full w-6 h-6 grid place-items-center hover:text-danger" aria-label="Remove ${name}">
+      <button type="button" class="absolute -top-2 -right-2 bg-surface border border-slate-200 rounded-full w-6 h-6 grid place-items-center hover:text-danger" aria-label="Remove ${name}">
         <span class="material-symbols-outlined text-base">close</span>
       </button>`;
-    div.querySelector('button').addEventListener('click', () => div.remove());
+    div.querySelector('button').addEventListener('click', async () => {
+      if (onRemove) { try { await onRemove(); } catch (e) { TT.toast.error('Could not remove receipt.'); return; } }
+      div.remove();
+    });
     recList.appendChild(div);
+    return div;
   }
+
   document.getElementById('f-receipts').addEventListener('change', (e) => {
-    [...e.target.files].forEach(f => addReceiptTile(f.name, f.type.includes('pdf') ? 'pdf' : 'image'));
+    [...e.target.files].forEach(f => {
+      pendingFiles.push(f);
+      receiptTile({
+        name: f.name, file_type: (f.type || '').includes('pdf') ? 'pdf' : 'image',
+        onRemove: () => { const i = pendingFiles.indexOf(f); if (i >= 0) pendingFiles.splice(i, 1); },
+      });
+    });
+    e.target.value = '';
   });
+
+  // existing receipts (when editing) load from the data layer, with delete wired
+  async function loadExistingReceipts() {
+    if (!claim.id || claim.id === 'TR-NEW') return;
+    try {
+      const existing = await TT.api.listReceipts(claim.id);
+      existing.forEach(r => receiptTile({ name: r.name, file_type: r.file_type, onRemove: () => TT.api.deleteReceipt(r.id, r.storage_path) }));
+    } catch (e) { /* non-fatal */ }
+  }
 
   // ---------- prefill existing ----------
   (claim.line_items || []).forEach(liRow);
   (claim.conveyance || []).forEach(cvRow);
-  (claim.receipts || []).forEach(r => addReceiptTile(r.name, r.file_type));
+  loadExistingReceipts();
   if (!claim.line_items?.length) liRow();        // start with one empty row
   if (!claim.conveyance?.length) cvRow();
   recalc();
@@ -207,7 +229,14 @@
     const btn = status === 'submitted' ? subBtn : draftBtn;
     const old = btn.innerHTML; btn.disabled = true; btn.innerHTML = 'Saving…';
     try {
-      await TT.api.saveClaim(c);
+      const saved = await TT.api.saveClaim(c);
+      const claimId = (saved && saved.id) || c.id;
+      // upload any newly attached receipts now that the claim row exists
+      for (const f of pendingFiles) {
+        try { await TT.api.uploadReceipt(claimId, f); }
+        catch (err) { console.error('receipt upload failed', err); TT.toast.error('A receipt failed to upload: ' + f.name); }
+      }
+      pendingFiles.length = 0;
       TT.toast.success(status === 'submitted' ? 'Claim submitted for approval' : 'Draft saved');
       setTimeout(() => location.href = 'my-claims.html', 700);
     } catch (e) {

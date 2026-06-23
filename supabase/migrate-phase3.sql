@@ -1,0 +1,35 @@
+-- TripTrail — Phase 3 migration. Run ONCE in the Supabase SQL Editor.
+-- Adds: receipts storage + RLS. (Later sections for users/profile/grades/notifications are
+-- appended as those features ship.)
+
+-- ============================================================
+-- 1) RECEIPTS — table RLS + private Storage bucket + object policies
+-- ============================================================
+
+-- receipts table RLS: use can_see_claim (not can_edit_claim) so evidence can be attached
+-- after a claim is submitted. Replaces the original rc_write policy.
+alter table public.receipts enable row level security;
+drop policy if exists rc_write  on public.receipts;
+drop policy if exists rc_read   on public.receipts;
+drop policy if exists rc_insert on public.receipts;
+drop policy if exists rc_delete on public.receipts;
+create policy rc_read   on public.receipts for select using (public.can_see_claim(claim_id));
+create policy rc_insert on public.receipts for insert with check (public.can_see_claim(claim_id));
+create policy rc_delete on public.receipts for delete using (public.can_see_claim(claim_id));
+
+-- private storage bucket for the actual files
+insert into storage.buckets (id, name, public)
+values ('receipts', 'receipts', false)
+on conflict (id) do nothing;
+
+-- storage object policies. Files are stored at  claims/<claim_id>/<filename>,
+-- so split_part(name,'/',2) = the claim id → reuse can_see_claim().
+drop policy if exists "receipts_obj_read"   on storage.objects;
+drop policy if exists "receipts_obj_insert" on storage.objects;
+drop policy if exists "receipts_obj_delete" on storage.objects;
+create policy "receipts_obj_read" on storage.objects for select to authenticated
+  using (bucket_id = 'receipts' and public.can_see_claim(split_part(name, '/', 2)));
+create policy "receipts_obj_insert" on storage.objects for insert to authenticated
+  with check (bucket_id = 'receipts' and public.can_see_claim(split_part(name, '/', 2)));
+create policy "receipts_obj_delete" on storage.objects for delete to authenticated
+  using (bucket_id = 'receipts' and public.can_see_claim(split_part(name, '/', 2)));

@@ -125,13 +125,21 @@
       <div class="flex flex-wrap gap-3">
         ${claim.receipts.map(r => {
           const pdf = r.file_type === 'pdf';
-          return `<div class="w-28"><div class="aspect-square rounded-md border border-slate-200 grid place-items-center ${pdf ? 'bg-danger-tint' : 'bg-slate-100'}">
-            <span class="material-symbols-outlined text-3xl ${pdf ? 'text-danger' : 'text-slate-400'}">${pdf ? 'picture_as_pdf' : 'image'}</span>
-          </div><p class="text-xs mt-1 truncate" title="${r.name}">${r.name}</p></div>`;
+          return `<a class="receipt-link w-28 block group" data-path="${r.storage_path || ''}" target="_blank" rel="noopener" title="${r.name}">
+            <div class="aspect-square rounded-md border border-slate-200 grid place-items-center ${pdf ? 'bg-danger-tint' : 'bg-slate-100'} group-hover:ring-2 group-hover:ring-primary transition">
+              <span class="material-symbols-outlined text-3xl ${pdf ? 'text-danger' : 'text-slate-400'}">${pdf ? 'picture_as_pdf' : 'image'}</span>
+            </div><p class="text-xs mt-1 truncate">${r.name}</p></a>`;
         }).join('')}
       </div>
     </div>` : ''}
   `;
+
+  // ---------- receipts: resolve signed URLs (live mode) ----------
+  document.querySelectorAll('.receipt-link').forEach(async (a) => {
+    const path = a.dataset.path;
+    if (!path) return;                       // mock mode / no file → not clickable
+    try { const url = await TT.api.getReceiptUrl(path); if (url) a.href = url; } catch (e) { /* ignore */ }
+  });
 
   // ---------- timeline ----------
   const curIdx = STAGES.findIndex(s => s.key === claim.status);
