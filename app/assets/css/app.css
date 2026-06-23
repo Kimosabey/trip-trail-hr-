@@ -10,10 +10,15 @@ body {
   -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
 }
 
-/* Smooth, touch-friendly horizontal scroll for wide tables on mobile */
-.overflow-x-auto { -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
-.overflow-x-auto::-webkit-scrollbar { height: 8px; }
-.overflow-x-auto::-webkit-scrollbar-thumb { background: var(--tt-border); border-radius: 9999px; }
+/* Wide tables stay swipe/drag scrollable, but the scrollbar is hidden (cleaner look) */
+.overflow-x-auto, .overflow-y-auto, .overflow-auto {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;            /* Firefox */
+  -ms-overflow-style: none;         /* old Edge/IE */
+}
+.overflow-x-auto::-webkit-scrollbar,
+.overflow-y-auto::-webkit-scrollbar,
+.overflow-auto::-webkit-scrollbar { display: none; }  /* Chrome/Safari/Edge */
 
 /* Inputs: keep font-size ≥16px on mobile so iOS doesn't zoom the page on focus */
 @media (max-width: 640px) {
