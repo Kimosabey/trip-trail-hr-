@@ -20,6 +20,7 @@
     TT.anim.countUp(document.getElementById('s-reimbursed'), s.reimbursed, true);
   } catch (e) { console.error(e); }
 
+  rowsEl.innerHTML = TT.ui.tableRows(8, 6);     // skeleton while loading
   try {
     all = await TT.api.listAllClaims();
   } catch (e) { TT.toast.error('Could not load claims.'); console.error(e); }
@@ -72,6 +73,7 @@
   function render() {
     const list = filtered();
     countEl.textContent = `Showing ${list.length} of ${all.length} claims`;
+    if (!list.length) { rowsEl.innerHTML = `<tr><td colspan="8">${TT.ui.empty('search_off', 'No claims match your filters.')}</td></tr>`; return; }
     rowsEl.innerHTML = list.map(c => `
       <tr class="border-b border-slate-100 hover:bg-slate-50">
         <td class="px-4 py-3 font-medium">${c.employee_name}</td>

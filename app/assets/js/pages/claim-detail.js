@@ -6,6 +6,7 @@
   const body = document.getElementById('claim-body');
   const printBtn = document.getElementById('btn-print');
   if (printBtn) printBtn.addEventListener('click', () => window.print());
+  body.innerHTML = `<div class="tt-card p-5">${TT.ui.skel('40%', 22)}<div style="height:14px"></div>${TT.ui.skel('100%', 14)}<div style="height:8px"></div>${TT.ui.skel('80%', 14)}<div style="height:8px"></div>${TT.ui.skel('90%', 14)}</div>`;
 
   // workflow stages in order
   const STAGES = [

@@ -65,6 +65,8 @@
   qEl.addEventListener('input', applyFilters);
   statusEl.addEventListener('change', applyFilters);
 
+  rowsEl.innerHTML = TT.ui.tableRows(6, 5);     // skeleton while loading
+  cardsEl.innerHTML = TT.ui.cards(4);
   try {
     all = await TT.api.listMyClaims();
     render(all);

@@ -63,6 +63,29 @@ TT.csv = {
   },
 };
 
+TT.ui = {
+  /** one shimmer bar */
+  skel(w, h) { return `<span class="tt-skel" style="display:block;width:${w || '100%'};height:${h || 14}px"></span>`; },
+  /** N skeleton table rows (string of <tr>) */
+  tableRows(cols, rows) {
+    rows = rows || 5; let out = '';
+    for (let r = 0; r < rows; r++) {
+      out += '<tr>';
+      for (let c = 0; c < cols; c++) out += `<td class="px-4 py-3">${TT.ui.skel(c === 0 ? '70%' : '50%')}</td>`;
+      out += '</tr>';
+    }
+    return out;
+  },
+  /** N skeleton cards (string) */
+  cards(n) {
+    n = n || 4; let out = '';
+    for (let i = 0; i < n; i++) out += `<div class="tt-card p-4 mb-3">${TT.ui.skel('40%', 14)}<div style="height:8px"></div>${TT.ui.skel('70%', 12)}</div>`;
+    return out;
+  },
+  /** consistent empty state */
+  empty(icon, title) { return `<div class="tt-empty"><span class="material-symbols-outlined" aria-hidden="true">${icon}</span><p class="mt-2">${title}</p></div>`; },
+};
+
 TT.anim = {
   /** Animate an element's text from 0 to value. money=true → ₹ formatted. Respects reduced-motion. */
   countUp(el, value, money) {

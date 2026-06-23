@@ -11,6 +11,7 @@
   const role = user.role;
 
   let claims = [];
+  listEl.innerHTML = TT.ui.cards(3);            // skeleton while loading
   try {
     if (role === 'hr_admin') {
       const all = await TT.api.listAllClaims();
