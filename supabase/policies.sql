@@ -37,10 +37,17 @@ create policy claims_read on public.claims
 -- insert: only as yourself
 create policy claims_insert on public.claims
   for insert with check (user_id = auth.uid());
--- update: owner may edit while draft/returned; staff may update (status transitions)
+-- update: owner may edit while draft/returned AND submit (reach 'submitted'); staff may
+-- update freely. The WITH CHECK is explicit so the owner can transition draft/returned →
+-- submitted (without it, Postgres reuses USING as the check and blocks leaving 'draft').
 create policy claims_update on public.claims
-  for update using (
+  for update
+  using (
     (user_id = auth.uid() and status in ('draft','returned'))
+    or public.is_staff()
+  )
+  with check (
+    (user_id = auth.uid() and status in ('draft','returned','submitted'))
     or public.is_staff()
   );
 -- delete: owner draft only

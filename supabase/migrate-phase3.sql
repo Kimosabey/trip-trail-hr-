@@ -134,3 +134,20 @@ begin
 end $$;
 -- To schedule daily (needs the pg_cron extension enabled in the dashboard):
 --   select cron.schedule('triptrail-3day', '0 9 * * *', $$ select public.remind_late_submissions(); $$);
+
+-- ============================================================
+-- 6) FIX: let employees submit their own claims (draft/returned → submitted)
+--    The original claims_update had only USING, so Postgres reused it as WITH CHECK and
+--    blocked the owner from leaving 'draft'. Add an explicit WITH CHECK.
+-- ============================================================
+drop policy if exists claims_update on public.claims;
+create policy claims_update on public.claims
+  for update
+  using (
+    (user_id = auth.uid() and status in ('draft','returned'))
+    or public.is_staff()
+  )
+  with check (
+    (user_id = auth.uid() and status in ('draft','returned','submitted'))
+    or public.is_staff()
+  );

@@ -89,6 +89,58 @@ if hr_only:
 else:
     print("     (no HR-only claim to test; seed data recommended)")
 
-print("\n================  %d passed, %d failed  ================" % (len(passed), len(failed)))
+skipped = []
+def missing(status, body):
+    """True if a table/relation isn't there yet (migrate-phase3.sql not run)."""
+    return status == 404 or (isinstance(body, str) and ("does not exist" in body or "PGRST205" in body or "Could not find the table" in body))
+
+print("\n5) PHASE-3 TABLES (need migrate-phase3.sql)")
+s, gl = req("GET", "/rest/v1/grade_limits?select=grade,max_da,max_lodging&order=grade", token=hr_tok)
+if missing(s, gl): skipped.append("grade_limits"); print("  SKIP grade_limits — run migrate-phase3.sql")
+else: check("grade_limits readable + seeded", s == 200 and isinstance(gl, list) and len(gl) >= 1, s if s != 200 else len(gl))
+s, nf = req("GET", "/rest/v1/notifications?select=id&limit=1", token=hr_tok)
+notif_ok = not missing(s, nf)
+if not notif_ok: skipped.append("notifications"); print("  SKIP notifications — run migrate-phase3.sql")
+else: check("notifications table readable (own rows)", s == 200, s)
+
+print("\n6) ROLE-ESCALATION GUARD (employee cannot make themselves HR)")
+s, b = req("PATCH", "/rest/v1/users?id=eq." + emp_id, token=emp_tok, prefer="return=representation", body={"role": "hr_admin"})
+new_role = (b[0]["role"] if isinstance(b, list) and b else None)
+check("employee self role-change blocked (stays employee)", new_role == "employee", "role now=%s (status %s)" % (new_role, s))
+
+print("\n7) RECEIPTS RLS (table-level; storage file tested in the browser)")
+own_claim = emp_claims[0]["id"] if isinstance(emp_claims, list) and emp_claims else None
+s0, _ = req("GET", "/rest/v1/receipts?select=id&limit=1", token=emp_tok)
+if missing(s0, _): skipped.append("receipts-rls"); print("  SKIP receipts — run migrate-phase3.sql")
+elif own_claim:
+    s, b = req("POST", "/rest/v1/receipts", token=emp_tok, prefer="return=representation",
+               body={"claim_id": own_claim, "name": "e2e.jpg", "storage_path": "claims/%s/e2e.jpg" % own_claim, "file_type": "image"})
+    rid = (b[0]["id"] if isinstance(b, list) and b else None)
+    check("employee attaches receipt to own claim", s in (200, 201) and rid, s)
+    if hr_only:
+        s2, b2 = req("POST", "/rest/v1/receipts", token=emp_tok, prefer="return=representation",
+                     body={"claim_id": hr_only, "name": "x.jpg", "storage_path": "claims/%s/x.jpg" % hr_only, "file_type": "image"})
+        blocked = (s2 in (401, 403)) or (isinstance(b2, list) and len(b2) == 0)
+        check("employee CANNOT attach receipt to HR's claim (RLS)", blocked, "status=%s" % s2)
+    if rid: req("DELETE", "/rest/v1/receipts?id=eq." + rid, token=emp_tok)
+else:
+    print("     (no employee-owned claim to test; run seed.sql)")
+
+print("\n8) NOTIFICATIONS FAN-OUT (submit -> reviewers notified)")
+if notif_ok:
+    nid = "E2E-NOTIF-001"
+    req("DELETE", "/rest/v1/claims?id=eq." + nid, token=emp_tok)
+    req("POST", "/rest/v1/claims", token=emp_tok, prefer="return=representation",
+        body={"id": nid, "user_id": emp_id, "purpose": "E2E notif", "place_of_visit": "T",
+              "trip_from": "2026-04-01", "trip_to": "2026-04-02", "status": "draft"})
+    req("PATCH", "/rest/v1/claims?id=eq." + nid, token=emp_tok, body={"status": "submitted"})
+    s, nn = req("GET", "/rest/v1/notifications?select=id,kind,message&claim_id=eq." + nid, token=hr_tok)
+    check("HR notified on submit (claims_notify trigger)", s == 200 and isinstance(nn, list) and len(nn) >= 1, "rows=%s" % (len(nn) if isinstance(nn, list) else nn))
+    req("DELETE", "/rest/v1/claims?id=eq." + nid, token=emp_tok)  # cascade removes the notification
+else:
+    print("     (skipped — notifications table not present)")
+
+print("\n================  %d passed, %d failed, %d skipped  ================" % (len(passed), len(failed), len(skipped)))
+if skipped: print("SKIPPED (run supabase/migrate-phase3.sql):", ", ".join(skipped))
 if failed: print("FAILED:", ", ".join(failed)); raise SystemExit(1)
 print("All end-to-end API checks passed.")
