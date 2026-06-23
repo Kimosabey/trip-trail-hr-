@@ -73,7 +73,7 @@
     const list = filtered();
     countEl.textContent = `Showing ${list.length} of ${all.length} claims`;
     rowsEl.innerHTML = list.map(c => `
-      <tr class="tt-row-enter border-b border-slate-100 hover:bg-slate-50">
+      <tr class="border-b border-slate-100 hover:bg-slate-50">
         <td class="px-4 py-3 font-medium">${c.employee_name}</td>
         <td class="px-4 py-3 text-on-surface-variant">${c.department}</td>
         <td class="px-4 py-3">${c.purpose}</td>
@@ -87,6 +87,7 @@
         </td>
       </tr>`).join('');
 
+    TT.anim && TT.anim.enter(rowsEl.querySelectorAll('tr'));
     rowsEl.querySelectorAll('[data-pay]').forEach(btn => btn.addEventListener('click', async () => {
       const voucher = window.prompt('Enter voucher reference (Cash Section):', '');
       if (voucher === null) return;   // cancelled

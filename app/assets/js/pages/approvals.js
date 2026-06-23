@@ -25,7 +25,7 @@
 
   listEl.innerHTML = claims.map(c => {
     const initials = (c.employee_name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-    return `<div class="tt-card p-4 tt-row-enter flex flex-wrap items-center gap-4">
+    return `<div class="tt-card p-4 flex flex-wrap items-center gap-4">
       <span class="w-11 h-11 rounded-full bg-primary text-white grid place-items-center font-semibold" aria-hidden="true">${initials}</span>
       <div class="flex-1 min-w-[180px]">
         <p class="font-semibold">${c.employee_name} <span class="font-normal text-on-surface-variant">· ${c.department}</span></p>
@@ -40,4 +40,5 @@
       </a>
     </div>`;
   }).join('');
+  TT.anim && TT.anim.enter(listEl.children);
 })();

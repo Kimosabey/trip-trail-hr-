@@ -11,7 +11,7 @@
   let all = [];
 
   function rowHtml(c) {
-    return `<tr class="tt-row-enter border-b border-slate-100 last:border-0 hover:bg-slate-50 cursor-pointer" data-id="${c.id}">
+    return `<tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50 cursor-pointer" data-id="${c.id}">
       <td class="px-6 py-4 font-medium">${c.purpose}</td>
       <td class="px-6 py-4 text-on-surface-variant">${c.place_of_visit}</td>
       <td class="px-6 py-4 text-on-surface-variant">${TT.format.dateRange(c.trip_from, c.trip_to)}</td>
@@ -26,7 +26,7 @@
   }
 
   function cardHtml(c) {
-    return `<a href="claim-detail.html?id=${encodeURIComponent(c.id)}" class="tt-row-enter block p-4">
+    return `<a href="claim-detail.html?id=${encodeURIComponent(c.id)}" class="block p-4">
       <div class="flex items-start justify-between gap-2">
         <div>
           <p class="font-semibold">${c.purpose}</p>
@@ -43,6 +43,8 @@
     emptyEl.classList.toggle('hidden', show);
     rowsEl.innerHTML = list.map(rowHtml).join('');
     cardsEl.innerHTML = list.map(cardHtml).join('');
+    TT.anim && TT.anim.enter(rowsEl.querySelectorAll('tr'));
+    TT.anim && TT.anim.enter(cardsEl.children);
     rowsEl.querySelectorAll('tr[data-id]').forEach(tr => {
       tr.addEventListener('click', (e) => {
         if (e.target.closest('a')) return;
