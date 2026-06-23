@@ -41,6 +41,8 @@
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" aria-hidden="true">search</span>
         <input id="q" type="search" placeholder="Search claims…" class="w-full pl-10 pr-3 h-11 rounded-md border border-slate-200 bg-surface" />
       </div>
+      <label class="sr-only" for="employee">Employee</label>
+      <select id="employee" class="h-11 rounded-md border border-slate-200 bg-surface px-3"><option value="">All Employees</option></select>
       <label class="sr-only" for="dept">Department</label>
       <select id="dept" class="h-11 rounded-md border border-slate-200 bg-surface px-3"><option value="">All Departments</option></select>
       <label class="sr-only" for="status">Status</label>
@@ -55,7 +57,10 @@
         <span class="material-symbols-outlined" aria-hidden="true">upload</span>Import CSV
       </button>
       <button id="export" class="tt-tap tt-press inline-flex items-center gap-2 px-4 rounded-md bg-success text-white font-semibold hover:opacity-90">
-        <span class="material-symbols-outlined" aria-hidden="true">download</span>Export to Excel
+        <span class="material-symbols-outlined" aria-hidden="true">download</span>Export
+      </button>
+      <button id="export-details" class="tt-tap tt-press inline-flex items-center gap-2 px-4 rounded-md border border-success text-success font-semibold hover:bg-success-tint">
+        <span class="material-symbols-outlined" aria-hidden="true">table_rows</span>Export full details
       </button>
     </div>
 

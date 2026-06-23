@@ -6,6 +6,7 @@
   const countEl = document.getElementById('count');
   const qEl = document.getElementById('q');
   const deptEl = document.getElementById('dept');
+  const employeeEl = document.getElementById('employee');
   const statusEl = document.getElementById('status');
 
   let all = [];
@@ -50,16 +51,20 @@
     }));
   }
 
-  // populate department filter
+  // populate department + employee filters
   [...new Set(all.map(c => c.department).filter(Boolean))].sort().forEach(d => {
     const o = document.createElement('option'); o.value = d; o.textContent = d; deptEl.appendChild(o);
   });
+  [...new Set(all.map(c => c.employee_name).filter(Boolean))].sort().forEach(n => {
+    const o = document.createElement('option'); o.value = n; o.textContent = n; employeeEl.appendChild(o);
+  });
 
   function filtered() {
-    const q = qEl.value.trim().toLowerCase(), dept = deptEl.value, st = statusEl.value;
+    const q = qEl.value.trim().toLowerCase(), dept = deptEl.value, emp = employeeEl.value, st = statusEl.value;
     return all.filter(c =>
       (!st || c.status === st) &&
       (!dept || c.department === dept) &&
+      (!emp || c.employee_name === emp) &&
       (!q || (c.employee_name + c.purpose + c.place_of_visit).toLowerCase().includes(q))
     );
   }
@@ -96,24 +101,61 @@
 
   qEl.addEventListener('input', render);
   deptEl.addEventListener('change', render);
+  employeeEl.addEventListener('change', render);
   statusEl.addEventListener('change', render);
   render();
 
-  // ---- CSV export (opens in Excel) ----
-  document.getElementById('export').addEventListener('click', () => {
-    const list = filtered();
-    const headers = ['Claim ID', 'Employee', 'Department', 'Purpose', 'Place of Visit', 'From', 'To', 'Grand Total', 'Advance', 'Balance Due', 'Status'];
-    const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-    const rows = list.map(c => [c.id, c.employee_name, c.department, c.purpose, c.place_of_visit,
-      c.trip_from, c.trip_to, c.grand_total, c.advance_received, c.balance_due, c.status].map(esc).join(','));
-    const csv = headers.map(esc).join(',') + '\n' + rows.join('\n');
+  // shared CSV helpers
+  const esc = (v) => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
+  function downloadCsv(name, csv) {
     const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'triptrail-claims.csv';
-    a.click();
+    a.href = URL.createObjectURL(blob); a.download = name; a.click();
     URL.revokeObjectURL(a.href);
+  }
+  function fileTag() {
+    const emp = employeeEl.value ? '-' + employeeEl.value.replace(/[^a-z0-9]+/gi, '_') : '';
+    return 'triptrail' + emp + '-claims';
+  }
+
+  // ---- summary CSV export (one row per claim; respects all filters incl. employee) ----
+  document.getElementById('export').addEventListener('click', () => {
+    const list = filtered();
+    if (!list.length) { TT.toast.error('No claims match the current filters.'); return; }
+    const headers = ['Claim ID', 'Employee', 'Department', 'Purpose', 'Place of Visit', 'From', 'To', 'Grand Total', 'Advance', 'Balance Due', 'Status'];
+    const rows = list.map(c => [c.id, c.employee_name, c.department, c.purpose, c.place_of_visit,
+      c.trip_from, c.trip_to, c.grand_total, c.advance_received, c.balance_due, c.status].map(esc).join(','));
+    downloadCsv(fileTag() + '.csv', headers.map(esc).join(',') + '\n' + rows.join('\n'));
     TT.toast.success('Exported ' + list.length + ' claims');
+  });
+
+  // ---- full detailed export (every line item + conveyance row for the filtered set) ----
+  document.getElementById('export-details').addEventListener('click', async () => {
+    const list = filtered();
+    if (!list.length) { TT.toast.error('No claims match the current filters.'); return; }
+    const btn = document.getElementById('export-details');
+    btn.disabled = true; const orig = btn.innerHTML; btn.innerHTML = 'Preparing…';
+    try {
+      const headers = ['Claim ID', 'Employee', 'Department', 'Purpose', 'Place of Visit', 'Trip From', 'Trip To',
+        'Status', 'Advance', 'Grand Total', 'Balance Due', 'Row Type', 'Date', 'Detail', 'Mode',
+        'Fare', 'Daily Allowance', 'Lodging', 'Local Conveyance', 'Misc Details', 'Amount', 'Row Total', 'Bill', 'Remarks'];
+      const out = [headers.map(esc).join(',')];
+      for (const c0 of list) {
+        const c = await TT.api.getClaim(c0.id) || c0;            // fetch full detail (children)
+        const base = [c.id, c.employee_name, c.department, c.purpose, c.place_of_visit, c.trip_from, c.trip_to,
+          c.status, c.advance_received, c.grand_total, c.balance_due];
+        const items = c.line_items || [], conv = c.conveyance || [];
+        if (!items.length && !conv.length) { out.push([...base, 'Claim', '', '', '', '', '', '', '', '', '', '', '', ''].map(esc).join(',')); }
+        items.forEach(li => out.push([...base, 'Journey', li.item_date, li.journey_particulars, li.mode_of_transport,
+          li.fare, li.daily_allowance, li.lodging, li.local_conveyance, li.misc_details, li.misc_amount,
+          TT.calc.rowTotal(li), '', ''].map(esc).join(',')));
+        conv.forEach(cv => out.push([...base, 'Conveyance', cv.item_date, (cv.from_place || '') + ' → ' + (cv.to_place || ''), cv.mode,
+          '', '', '', '', '', cv.amount, '', cv.has_bill ? 'Yes' : 'No', cv.remarks].map(esc).join(',')));
+      }
+      downloadCsv(fileTag() + '-full.csv', out.join('\n'));
+      TT.toast.success('Exported full details for ' + list.length + ' claims');
+    } catch (e) { console.error(e); TT.toast.error('Detailed export failed.'); }
+    finally { btn.disabled = false; btn.innerHTML = orig; }
   });
 
   // ---- CSV import (round-trip: update existing claims from an exported file) ----
