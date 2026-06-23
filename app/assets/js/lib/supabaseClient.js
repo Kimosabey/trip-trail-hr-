@@ -13,7 +13,12 @@ TT.supa = (function () {
     if (!window.supabase || !APP_CONFIG.SUPABASE_URL) {
       throw new Error('Supabase not configured. Set SUPABASE_URL/ANON_KEY in config.js and load supabase-js.');
     }
-    _client = window.supabase.createClient(APP_CONFIG.SUPABASE_URL, APP_CONFIG.SUPABASE_ANON_KEY);
+    // Force the apikey header on every request. supabase-js normally adds it, but with the
+    // new `sb_publishable_…` key format some builds omit it → "No API key found in the request".
+    // We set apikey explicitly (NOT Authorization, so the signed-in user's JWT still drives RLS).
+    _client = window.supabase.createClient(APP_CONFIG.SUPABASE_URL, APP_CONFIG.SUPABASE_ANON_KEY, {
+      global: { headers: { apikey: APP_CONFIG.SUPABASE_ANON_KEY } },
+    });
     return _client;
   }
 
