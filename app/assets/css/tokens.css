@@ -30,4 +30,8 @@
 
   --tt-gutter: 24px;
   --tt-stack-gap: 16px;
+
+  /* motion */
+  --tt-ease: cubic-bezier(.2, .7, .2, 1);
+  --tt-dur: 180ms;
 }

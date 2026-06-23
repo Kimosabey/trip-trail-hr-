@@ -132,9 +132,13 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 /* --- Micro-animations --- */
 @keyframes tt-slide-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes tt-fade-in  { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-.tt-row-enter { animation: tt-fade-in 160ms ease both; }
+.tt-row-enter { animation: tt-fade-in 160ms var(--tt-ease) both; }
 .tt-press:active { transform: scale(0.98); }
-.tt-card, .tt-press, button { transition: box-shadow 150ms ease, background-color 150ms ease, transform 120ms ease; }
+.tt-card, .tt-press, button { transition: box-shadow var(--tt-dur) var(--tt-ease), background-color var(--tt-dur) var(--tt-ease), transform 120ms var(--tt-ease); }
+
+/* gentle page-enter on each load */
+main { animation: tt-page-enter 260ms var(--tt-ease) both; }
+@keyframes tt-page-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 /* --- Responsive editor tables → stacked cards on phones (tt-resp-table) --- */
 @media (max-width: 640px) {
@@ -154,9 +158,13 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   .tt-resp-table .cell-num, .tt-resp-table .cell-txt { text-align: left; background: var(--tt-bg); }
 }
 
-/* Respect reduced motion (WCAG 2.3.3 / motion sensitivity) */
+/* Respect reduced motion (WCAG 2.3.3): make everything near-instant rather than removing
+   feedback entirely — disables the aurora drift, page-enter, shimmer, list staggers. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important; scroll-behavior: auto !important;
+  }
 }
 
 /* Minimum tap target (WCAG 2.5.5) */
