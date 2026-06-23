@@ -87,6 +87,13 @@
       series: [{ type: 'bar', data: empSorted.slice().reverse().map(k => byEmp[k]), itemStyle: { borderRadius: [0, 6, 6, 0], color: '#2563eb' }, barMaxWidth: 24 }],
     });
 
+    // chart accessibility: each chart container gets a text summary for screen readers
+    const aria = (id, label) => { const el = document.getElementById(id); if (el) { el.setAttribute('role', 'img'); el.setAttribute('aria-label', label); } };
+    aria('chart-month', 'Spend by month. ' + (months.map(m => monthLbl(m) + ': ' + TT.format.money(byMonth[m])).join('; ') || 'No data') + '.');
+    aria('chart-dept', 'Spend by department. ' + (deptKeys.map(k => k + ': ' + TT.format.money(byDept[k])).join('; ') || 'No data') + '.');
+    aria('chart-status', 'Claim status breakdown. ' + (Object.keys(byStatus).map(k => k + ': ' + byStatus[k]).join('; ') || 'No data') + '.');
+    aria('chart-emp', 'Top spenders. ' + (empSorted.map(k => k + ': ' + TT.format.money(byEmp[k])).join('; ') || 'No data') + '.');
+
     // per-employee totals table
     const empAgg = {};
     rows.forEach(c => { const k = c.employee_name || '—'; (empAgg[k] = empAgg[k] || { dept: c.department, n: 0, total: 0 }); empAgg[k].n++; empAgg[k].total += spend(c); });

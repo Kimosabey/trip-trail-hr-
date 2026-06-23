@@ -231,21 +231,40 @@
 
   function validate(c) {
     const errs = [];
-    if (!c.purpose) errs.push('Purpose of Travel');
-    if (!c.place_of_visit) errs.push('Place of Visit');
-    if (!c.trip_from) errs.push('Date From');
-    if (!c.trip_to) errs.push('Date To');
-    if (c.trip_from && c.trip_to && c.trip_to < c.trip_from) errs.push('Date To must be after Date From');
-    if (!c.line_items.some(li => TT.calc.rowTotal(li) > 0)) errs.push('At least one expense row');
+    if (!c.purpose) errs.push({ id: 'f-purpose', label: 'Purpose of Travel is required' });
+    if (!c.place_of_visit) errs.push({ id: 'f-visit', label: 'Place of Visit is required' });
+    if (!c.trip_from) errs.push({ id: 'f-from', label: 'Date From is required' });
+    if (!c.trip_to) errs.push({ id: 'f-to', label: 'Date To is required' });
+    if (c.trip_from && c.trip_to && c.trip_to < c.trip_from) errs.push({ id: 'f-to', label: 'Date To must be on or after Date From' });
+    if (!c.line_items.some(li => TT.calc.rowTotal(li) > 0)) errs.push({ id: 'add-li', label: 'Add at least one journey row with an amount' });
     return errs;
+  }
+  const FIELD_IDS = ['f-purpose', 'f-visit', 'f-from', 'f-to'];
+  function clearErrors() {
+    FIELD_IDS.forEach(id => { const el = document.getElementById(id); if (el) { el.removeAttribute('aria-invalid'); el.removeAttribute('aria-describedby'); } });
+    const s = document.getElementById('tt-error-summary'); if (s) s.remove();
+  }
+  function showErrors(errs) {
+    clearErrors();
+    const main = document.getElementById('main');
+    const sum = document.createElement('div');
+    sum.id = 'tt-error-summary'; sum.setAttribute('role', 'alert'); sum.tabIndex = -1;
+    sum.className = 'tt-card p-4 mb-4 bg-danger-tint text-danger-text';
+    sum.innerHTML = `<p class="font-semibold flex items-center gap-2"><span class="material-symbols-outlined" aria-hidden="true">error</span>Please fix ${errs.length} item${errs.length > 1 ? 's' : ''}:</p>
+      <ul class="list-disc list-inside mt-1 text-sm">${errs.map(e => `<li>${e.label}</li>`).join('')}</ul>`;
+    main.insertBefore(sum, main.firstChild);
+    errs.forEach(e => { const el = document.getElementById(e.id); if (el && el.tagName !== 'BUTTON') { el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', 'tt-error-summary'); } });
+    const first = document.getElementById(errs[0].id);
+    if (first) { first.focus(); first.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
   }
 
   async function save(status) {
     const c = collect();
     if (status === 'submitted') {
       const errs = validate(c);
-      if (errs.length) { TT.toast.error('Please complete: ' + errs.join(', ')); return; }
+      if (errs.length) { showErrors(errs); TT.toast.error('Please fix the highlighted fields'); return; }
     }
+    clearErrors();
     c.status = status;
     if (c.id === 'TR-NEW') c.id = 'TR-' + (fromEl.value || '2026').slice(0, 7).replace('-', '-') + '-' + Math.floor(100 + Math.abs(hashStr(c.purpose)) % 900);
     const btn = status === 'submitted' ? subBtn : draftBtn;

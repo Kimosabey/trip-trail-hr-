@@ -73,6 +73,9 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   border-radius: 4px;
 }
 
+/* Invalid form fields (WCAG 3.3.1) */
+[aria-invalid="true"] { outline: 2px solid var(--tt-danger); outline-offset: 1px; border-color: var(--tt-danger) !important; }
+
 /* Skip link (WCAG 2.4.1) */
 .skip-link {
   position: absolute; left: -9999px; top: 0; z-index: 100;
