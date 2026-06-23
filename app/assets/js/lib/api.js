@@ -103,6 +103,20 @@ TT.api = (function () {
       return TT.supa.setStatus(id, status, comment);
     },
 
+    /** Round-trip CSV import: update editable header fields of an existing claim. Returns true if found. */
+    async importUpdate(id, fields) {
+      if (mock()) {
+        await delay();
+        const c = store().find(x => x.id === id);
+        if (!c) return false;
+        Object.assign(c, fields);
+        c.balance_due = TT.calc.balanceDue(c.grand_total, c.advance_received);
+        persist();
+        return true;
+      }
+      return TT.supa.importUpdate(id, fields);
+    },
+
     /** Cash Section step: mark Paid and record the voucher reference (Sheet-1 footer). */
     async markPaid(id, voucherRef) {
       if (mock()) {

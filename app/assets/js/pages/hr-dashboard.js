@@ -115,4 +115,48 @@
     URL.revokeObjectURL(a.href);
     TT.toast.success('Exported ' + list.length + ' claims');
   });
+
+  // ---- CSV import (round-trip: update existing claims from an exported file) ----
+  const VALID_STATUS = ['draft', 'submitted', 'hod_approved', 'checked', 'approved', 'paid', 'rejected', 'returned'];
+  const importBtn = document.getElementById('import');
+  const importFile = document.getElementById('import-file');
+  importBtn.addEventListener('click', () => importFile.click());
+  importFile.addEventListener('change', () => {
+    const file = importFile.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async () => {
+      let rows;
+      try { rows = TT.csv.parse(reader.result); }
+      catch (e) { TT.toast.error('Could not read CSV.'); return; }
+      if (!rows.length) { TT.toast.error('CSV has no data rows.'); return; }
+      if (!('Claim ID' in rows[0])) { TT.toast.error('CSV must have a "Claim ID" column (use an exported file).'); return; }
+
+      let updated = 0, skipped = 0, bad = 0;
+      importBtn.disabled = true; const orig = importBtn.innerHTML; importBtn.innerHTML = 'Importing…';
+      for (const r of rows) {
+        const id = (r['Claim ID'] || '').trim();
+        if (!id) { bad++; continue; }
+        const fields = {};
+        if (r['Purpose'] !== undefined) fields.purpose = r['Purpose'] || null;
+        if (r['Place of Visit'] !== undefined) fields.place_of_visit = r['Place of Visit'] || null;
+        if (r['From']) fields.trip_from = r['From'];
+        if (r['To']) fields.trip_to = r['To'];
+        if (r['Advance'] !== undefined && r['Advance'] !== '') fields.advance_received = Number(r['Advance']) || 0;
+        const st = (r['Status'] || '').trim();
+        if (st) { if (VALID_STATUS.includes(st)) fields.status = st; else { bad++; continue; } }
+        try {
+          const ok = await TT.api.importUpdate(id, fields);
+          ok ? updated++ : skipped++;
+        } catch (e) { console.error(e); bad++; }
+      }
+      importBtn.disabled = false; importBtn.innerHTML = orig;
+      importFile.value = '';
+      TT.toast.success(`Imported: ${updated} updated, ${skipped} not found${bad ? ', ' + bad + ' invalid' : ''}`);
+      // refresh the table + stats
+      all = await TT.api.listAllClaims();
+      render();
+    };
+    reader.readAsText(file);
+  });
 })();

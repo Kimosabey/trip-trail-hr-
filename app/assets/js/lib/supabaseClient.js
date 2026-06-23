@@ -139,5 +139,11 @@ TT.supa = (function () {
     return getClaim(id);
   }
 
-  return { client, sendMagicLink, signInPassword, signUp, signOut, currentUser, listMyClaims, listAllClaims, listApprovalQueue, getClaim, saveClaim, setStatus, markPaid };
+  async function importUpdate(id, fields) {
+    const { data, error } = await client().from('claims').update(fields).eq('id', id).select('id');
+    if (error) throw error;
+    return (data || []).length > 0;
+  }
+
+  return { client, sendMagicLink, signInPassword, signUp, signOut, currentUser, listMyClaims, listAllClaims, listApprovalQueue, getClaim, saveClaim, setStatus, markPaid, importUpdate };
 })();

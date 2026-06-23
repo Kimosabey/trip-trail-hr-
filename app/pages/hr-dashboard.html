@@ -50,6 +50,10 @@
         <option value="checked">Checked</option><option value="approved">Approved</option>
         <option value="paid">Paid</option><option value="rejected">Rejected</option>
       </select>
+      <input id="import-file" type="file" accept=".csv,text/csv" class="sr-only" />
+      <button id="import" class="tt-tap tt-press inline-flex items-center gap-2 px-4 rounded-md border border-slate-200 bg-surface font-semibold hover:bg-slate-50">
+        <span class="material-symbols-outlined" aria-hidden="true">upload</span>Import CSV
+      </button>
       <button id="export" class="tt-tap tt-press inline-flex items-center gap-2 px-4 rounded-md bg-success text-white font-semibold hover:opacity-90">
         <span class="material-symbols-outlined" aria-hidden="true">download</span>Export to Excel
       </button>

@@ -24,6 +24,32 @@ TT.format = {
   },
 };
 
+TT.csv = {
+  /** Parse CSV text → array of row objects keyed by header. Handles quotes, "" escapes, commas, newlines. */
+  parse(text) {
+    const rows = []; let field = '', row = [], inQ = false;
+    text = String(text || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (inQ) {
+        if (ch === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else { inQ = false; } }
+        else field += ch;
+      } else {
+        if (ch === '"') inQ = true;
+        else if (ch === ',') { row.push(field); field = ''; }
+        else if (ch === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+        else field += ch;
+      }
+    }
+    if (field.length || row.length) { row.push(field); rows.push(row); }
+    if (!rows.length) return [];
+    const headers = rows.shift().map(h => h.trim());
+    return rows
+      .filter(r => r.some(c => (c || '').trim() !== ''))
+      .map(r => { const o = {}; headers.forEach((h, i) => o[h] = (r[i] !== undefined ? r[i] : '')); return o; });
+  },
+};
+
 TT.anim = {
   /** Animate an element's text from 0 to value. money=true → ₹ formatted. Respects reduced-motion. */
   countUp(el, value, money) {
