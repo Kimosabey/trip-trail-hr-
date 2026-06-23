@@ -193,5 +193,17 @@ TT.supa = (function () {
     if (error) throw error; return data || null;
   }
 
-  return { client, sendMagicLink, signInPassword, signUp, signOut, currentUser, listMyClaims, listAllClaims, listApprovalQueue, getClaim, saveClaim, setStatus, markPaid, importUpdate, uploadReceipt, listReceipts, getReceiptUrl, deleteReceipt, listUsers, updateUser, updateMyProfile, getLimits };
+  // ---- notifications (fan-out is done server-side by the claims_notify trigger) ----
+  async function listNotifications() {
+    const { data, error } = await client().from('notifications').select('*').order('created_at', { ascending: false }).limit(30);
+    if (error) throw error; return data || [];
+  }
+  async function markRead(id) {
+    const { error } = await client().from('notifications').update({ read: true }).eq('id', id); if (error) throw error; return true;
+  }
+  async function markAllRead() {
+    const { error } = await client().from('notifications').update({ read: true }).eq('read', false); if (error) throw error; return true;
+  }
+
+  return { client, sendMagicLink, signInPassword, signUp, signOut, currentUser, listMyClaims, listAllClaims, listApprovalQueue, getClaim, saveClaim, setStatus, markPaid, importUpdate, uploadReceipt, listReceipts, getReceiptUrl, deleteReceipt, listUsers, updateUser, updateMyProfile, getLimits, listNotifications, markRead, markAllRead };
 })();

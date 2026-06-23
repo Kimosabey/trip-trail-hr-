@@ -12,12 +12,17 @@ In the dashboard → **SQL Editor**, run these files in order (paste & Run):
 2. `policies.sql` — Row-Level Security (HR sees all, employees see own)
 3. `seed.sql`     — optional demo data (edit UUIDs first)
 
-## 3. Storage for receipts
-Just run **`migrate-phase3.sql`** in the SQL Editor — it creates the private `receipts`
-bucket **and** its access policies (and fixes the receipts-table RLS so evidence can be
-attached after submit). No manual bucket creation needed.
-Files are stored at `claims/<claim_id>/<filename>`; the app shows them via short-lived
-signed URLs. Run this once (it's safe to re-run).
+## 3. Phase-3 features — run `migrate-phase3.sql`
+Run **`migrate-phase3.sql`** once in the SQL Editor (safe to re-run). It sets up everything
+the newer features need:
+- **Receipts:** private `receipts` Storage bucket + object policies + corrected receipts-table
+  RLS (evidence can be attached after submit). Files live at `claims/<claim_id>/<filename>`,
+  shown via short-lived signed URLs.
+- **Users:** `guard_user_role` trigger (a non-HR user can't escalate their own role).
+- **Eligibility:** `grade_limits` table + seed (E1/E2/M1/M2) for DA/Lodging caps.
+- **Notifications:** `notifications` table + the `claims_notify` fan-out trigger.
+- **3-day reminder (optional):** `remind_late_submissions()` — schedule via pg_cron (see the
+  commented line at the end of the file).
 
 ## 4. Auth
 - **Authentication → Providers → Email** is on by default (magic link). Done.

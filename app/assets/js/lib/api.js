@@ -21,11 +21,37 @@ TT.api = (function () {
   function curId() { try { return localStorage.getItem(LS_USER) || TT.mock.users[0].id; } catch (e) { return TT.mock.users[0].id; } }
   function curUser() { return TT.mock.users.find(u => u.id === curId()) || TT.mock.users[0]; }
 
+  // mock notifications store + fan-out (mirrors the server-side claims_notify trigger)
+  const LS_NOTIF = 'tt_mock_notifs';
+  let _notifs = null;
+  function notifs() {
+    if (_notifs) return _notifs;
+    try { _notifs = JSON.parse(localStorage.getItem(LS_NOTIF)); } catch (e) { _notifs = null; }
+    if (!_notifs) _notifs = [];
+    return _notifs;
+  }
+  function persistNotifs() { try { localStorage.setItem(LS_NOTIF, JSON.stringify(_notifs)); } catch (e) {} }
+  let _nseq = 0;
+  function pushNotif(userId, claimId, kind, message) {
+    notifs().unshift({ id: 'n' + Date.now() + '-' + (_nseq++), user_id: userId, claim_id: claimId, kind, message, read: false, created_at: new Date().toISOString() });
+    persistNotifs();
+  }
+  function fanout(claim, status) {
+    const byRole = (roles) => TT.mock.users.filter(u => roles.includes(u.role));
+    if (status === 'submitted') byRole(['hod', 'hr_admin']).forEach(u => pushNotif(u.id, claim.id, 'review', 'New claim to review: ' + (claim.purpose || '') + ' (' + claim.id + ')'));
+    else if (status === 'hod_approved') byRole(['checker', 'hr_admin']).forEach(u => pushNotif(u.id, claim.id, 'review', 'Claim ready to check: ' + claim.id));
+    else if (status === 'checked') byRole(['approver', 'hr_admin']).forEach(u => pushNotif(u.id, claim.id, 'review', 'Claim awaiting approval: ' + claim.id));
+    else if (status === 'approved') pushNotif(claim.user_id, claim.id, 'approved', 'Your claim ' + claim.id + ' was approved');
+    else if (status === 'rejected') pushNotif(claim.user_id, claim.id, 'rejected', 'Your claim ' + claim.id + ' was rejected');
+    else if (status === 'returned') pushNotif(claim.user_id, claim.id, 'returned', 'Your claim ' + claim.id + ' was returned for edit');
+    else if (status === 'paid') pushNotif(claim.user_id, claim.id, 'paid', 'Your claim ' + claim.id + ' was marked paid');
+  }
+
   return {
     // ---- demo helpers (mock mode only) ----
     listDemoUsers() { return clone(TT.mock.users); },
     setDemoUser(id) { try { localStorage.setItem(LS_USER, id); } catch (e) {} },
-    resetMockData() { try { localStorage.removeItem(LS_CLAIMS); } catch (e) {} _store = null; },
+    resetMockData() { try { localStorage.removeItem(LS_CLAIMS); localStorage.removeItem(LS_NOTIF); } catch (e) {} _store = null; _notifs = null; },
 
     // ---- session ----
     async currentUser() {
@@ -55,6 +81,20 @@ TT.api = (function () {
         return true;
       }
       return TT.supa.updateMyProfile(fields);
+    },
+
+    // ---- notifications ----
+    async listNotifications() {
+      if (mock()) { await delay(); const me = curId(); return clone(notifs().filter(n => n.user_id === me)); }
+      return TT.supa.listNotifications();
+    },
+    async markRead(id) {
+      if (mock()) { await delay(); const n = notifs().find(x => x.id === id); if (n) { n.read = true; persistNotifs(); } return true; }
+      return TT.supa.markRead(id);
+    },
+    async markAllRead() {
+      if (mock()) { await delay(); const me = curId(); notifs().forEach(n => { if (n.user_id === me) n.read = true; }); persistNotifs(); return true; }
+      return TT.supa.markAllRead();
     },
 
     // ---- eligibility limits ----
@@ -122,6 +162,7 @@ TT.api = (function () {
         const idx = s.findIndex(c => c.id === claim.id);
         if (idx >= 0) s[idx] = claim; else s.unshift(claim);
         persist();
+        if (claim.status === 'submitted') fanout(claim, 'submitted');
         return clone(claim);
       }
       return TT.supa.saveClaim(claim);
@@ -131,7 +172,7 @@ TT.api = (function () {
       if (mock()) {
         await delay();
         const c = store().find(x => x.id === id);
-        if (c) { c.status = status; (c.approvals = c.approvals || []).push({ stage: status, comment, actor: curUser().full_name }); persist(); }
+        if (c) { c.status = status; (c.approvals = c.approvals || []).push({ stage: status, comment, actor: curUser().full_name }); persist(); fanout(c, status); }
         return clone(c);
       }
       return TT.supa.setStatus(id, status, comment);
@@ -186,7 +227,7 @@ TT.api = (function () {
         if (c) {
           c.status = 'paid'; c.voucher_ref = voucherRef || '';
           (c.approvals = c.approvals || []).push({ stage: 'cashier', comment: voucherRef ? 'Voucher ' + voucherRef : '', actor: curUser().full_name });
-          persist();
+          persist(); fanout(c, 'paid');
         }
         return clone(c);
       }

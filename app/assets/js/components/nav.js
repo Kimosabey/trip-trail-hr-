@@ -41,9 +41,19 @@ TT.nav = (function () {
           </div>
           <div class="flex items-center gap-3">
             ${demoSwitcherHtml(user)}
-            <button class="relative text-on-surface-variant hover:text-on-surface tt-press" aria-label="Notifications">
-              <span class="material-symbols-outlined">notifications</span>
-            </button>
+            <div class="relative">
+              <button id="tt-bell-btn" class="relative text-on-surface-variant hover:text-on-surface tt-press" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
+                <span class="material-symbols-outlined">notifications</span>
+                <span id="tt-bell-badge" class="hidden absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-danger text-white text-[10px] font-bold grid place-items-center"></span>
+              </button>
+              <div id="tt-bell-menu" role="menu" class="hidden absolute right-0 mt-2 w-80 max-w-[90vw] tt-card p-0 shadow-lift origin-top-right overflow-hidden" style="animation: tt-fade-in 120ms ease both;">
+                <div class="flex items-center justify-between px-3 py-2 border-b border-slate-100">
+                  <p class="text-sm font-semibold">Notifications</p>
+                  <button id="tt-bell-readall" class="text-xs text-primary hover:underline">Mark all read</button>
+                </div>
+                <div id="tt-bell-list" class="max-h-80 overflow-y-auto"></div>
+              </div>
+            </div>
             <div class="relative">
               <button id="tt-profile-btn" class="flex items-center gap-2 tt-press" aria-haspopup="true" aria-expanded="false" aria-controls="tt-profile-menu">
                 <span class="w-8 h-8 rounded-full bg-primary text-white grid place-items-center text-xs font-semibold" aria-hidden="true">${initials}</span>
@@ -81,6 +91,54 @@ TT.nav = (function () {
     // demo user switcher (mock mode only)
     const demoSel = document.getElementById('tt-demo-user');
     if (demoSel) demoSel.addEventListener('change', () => { TT.api.setDemoUser(demoSel.value); location.reload(); });
+
+    wireBell();
+  }
+
+  // ---- notification bell ----
+  async function wireBell() {
+    const btn = document.getElementById('tt-bell-btn');
+    const menu = document.getElementById('tt-bell-menu');
+    const listEl = document.getElementById('tt-bell-list');
+    const badge = document.getElementById('tt-bell-badge');
+    if (!btn || !TT.api.listNotifications) return;
+
+    async function refresh() {
+      let items = [];
+      try { items = await TT.api.listNotifications(); } catch (e) { return; }
+      const unread = items.filter(n => !n.read).length;
+      if (unread > 0) { badge.textContent = unread > 9 ? '9+' : unread; badge.classList.remove('hidden'); }
+      else badge.classList.add('hidden');
+
+      const icon = { review: 'rate_review', approved: 'verified', rejected: 'cancel', returned: 'undo', paid: 'paid', reminder: 'alarm' };
+      listEl.innerHTML = items.length ? items.map(n => `
+        <button data-id="${n.id}" data-claim="${n.claim_id || ''}" role="menuitem"
+          class="w-full text-left flex gap-2 px-3 py-2 border-b border-slate-50 hover:bg-slate-50 ${n.read ? '' : 'bg-primary-tint/40'}">
+          <span class="material-symbols-outlined text-base text-primary" aria-hidden="true">${icon[n.kind] || 'notifications'}</span>
+          <span class="min-w-0"><span class="block text-sm ${n.read ? 'text-on-surface-variant' : 'font-medium'}">${n.message || ''}</span>
+          <span class="block text-xs text-on-surface-variant">${TT.format.date(n.created_at)}</span></span>
+        </button>`).join('')
+        : '<p class="px-3 py-6 text-center text-sm text-on-surface-variant">No notifications.</p>';
+
+      listEl.querySelectorAll('[data-id]').forEach(b => b.addEventListener('click', async () => {
+        try { await TT.api.markRead(b.dataset.id); } catch (e) {}
+        if (b.dataset.claim) location.href = 'claim-detail.html?id=' + encodeURIComponent(b.dataset.claim);
+        else refresh();
+      }));
+    }
+
+    const close = () => { menu.classList.add('hidden'); btn.setAttribute('aria-expanded', 'false'); };
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = menu.classList.toggle('hidden');
+      btn.setAttribute('aria-expanded', String(!open));
+    });
+    document.addEventListener('click', (e) => { if (!menu.contains(e.target) && !btn.contains(e.target)) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    const readAll = document.getElementById('tt-bell-readall');
+    if (readAll) readAll.addEventListener('click', async (e) => { e.stopPropagation(); try { await TT.api.markAllRead(); } catch (er) {} refresh(); });
+
+    refresh();
   }
 
   /** Mock-only: a dropdown to act as different users, to test "employee submits → HR sees". */

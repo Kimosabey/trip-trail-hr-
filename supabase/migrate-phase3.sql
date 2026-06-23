@@ -68,3 +68,69 @@ create policy gl_write on public.grade_limits for all
 insert into public.grade_limits (grade, max_da, max_lodging) values
   ('E1', 800, 1500), ('E2', 1000, 2500), ('M1', 1500, 3500), ('M2', 2000, 5000)
 on conflict (grade) do nothing;
+
+-- ============================================================
+-- 4) NOTIFICATIONS — in-app alerts + fan-out trigger on status change
+-- ============================================================
+create table if not exists public.notifications (
+  id         uuid primary key default gen_random_uuid(),
+  user_id    uuid not null references public.users(id) on delete cascade,
+  claim_id   text references public.claims(id) on delete cascade,
+  kind       text,                       -- review | approved | rejected | returned | paid
+  message    text,
+  read       boolean not null default false,
+  created_at timestamptz not null default now()
+);
+create index if not exists idx_notif_user on public.notifications(user_id, read);
+alter table public.notifications enable row level security;
+drop policy if exists nf_read   on public.notifications;
+drop policy if exists nf_update on public.notifications;
+create policy nf_read   on public.notifications for select using (user_id = auth.uid());
+create policy nf_update on public.notifications for update using (user_id = auth.uid());
+
+-- fan-out: when a claim's status changes, notify the right people (SECURITY DEFINER).
+create or replace function public.notify_on_status()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if (tg_op = 'UPDATE' and new.status is not distinct from old.status) then return new; end if;
+  if new.status = 'submitted' then
+    insert into public.notifications(user_id, claim_id, kind, message)
+      select id, new.id, 'review', 'New claim to review: ' || coalesce(new.purpose,'') || ' (' || new.id || ')'
+      from public.users where role in ('hod','hr_admin');
+  elsif new.status = 'hod_approved' then
+    insert into public.notifications(user_id, claim_id, kind, message)
+      select id, new.id, 'review', 'Claim ready to check: ' || new.id from public.users where role in ('checker','hr_admin');
+  elsif new.status = 'checked' then
+    insert into public.notifications(user_id, claim_id, kind, message)
+      select id, new.id, 'review', 'Claim awaiting approval: ' || new.id from public.users where role in ('approver','hr_admin');
+  elsif new.status = 'approved' then
+    insert into public.notifications(user_id, claim_id, kind, message) values (new.user_id, new.id, 'approved', 'Your claim ' || new.id || ' was approved');
+  elsif new.status = 'rejected' then
+    insert into public.notifications(user_id, claim_id, kind, message) values (new.user_id, new.id, 'rejected', 'Your claim ' || new.id || ' was rejected');
+  elsif new.status = 'returned' then
+    insert into public.notifications(user_id, claim_id, kind, message) values (new.user_id, new.id, 'returned', 'Your claim ' || new.id || ' was returned for edit');
+  elsif new.status = 'paid' then
+    insert into public.notifications(user_id, claim_id, kind, message) values (new.user_id, new.id, 'paid', 'Your claim ' || new.id || ' was marked paid');
+  end if;
+  return new;
+end $$;
+drop trigger if exists claims_notify on public.claims;
+create trigger claims_notify after insert or update on public.claims
+  for each row execute function public.notify_on_status();
+
+-- ============================================================
+-- 5) 3-DAY REMINDER (optional; requires pg_cron). Notifies owners of trips that ended
+--    3+ days ago whose claim is still a draft (or not yet submitted).
+-- ============================================================
+create or replace function public.remind_late_submissions()
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  insert into public.notifications(user_id, claim_id, kind, message)
+    select c.user_id, c.id, 'reminder', 'Reminder: submit your travel report ' || c.id || ' (trip ended ' || c.trip_to || ')'
+    from public.claims c
+    where c.status = 'draft' and c.trip_to is not null and c.trip_to <= (current_date - interval '3 days')
+      and not exists (select 1 from public.notifications n where n.claim_id = c.id and n.kind = 'reminder'
+                      and n.created_at > now() - interval '7 days');
+end $$;
+-- To schedule daily (needs the pg_cron extension enabled in the dashboard):
+--   select cron.schedule('triptrail-3day', '0 9 * * *', $$ select public.remind_late_submissions(); $$);

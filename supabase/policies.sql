@@ -8,6 +8,7 @@ alter table public.line_items enable row level security;
 alter table public.conveyance enable row level security;
 alter table public.receipts   enable row level security;
 alter table public.approvals  enable row level security;
+alter table public.notifications enable row level security;
 
 -- helper: is the current user HR/approver staff?
 -- SECURITY DEFINER so their internal read of public.users bypasses RLS — otherwise the
@@ -81,3 +82,7 @@ create policy rc_delete on public.receipts for delete using (public.can_see_clai
 -- approvals: anyone who can see the claim can read the trail; staff can add entries
 create policy ap_read on public.approvals for select using (public.can_see_claim(claim_id));
 create policy ap_insert on public.approvals for insert with check (public.is_staff() or public.can_edit_claim(claim_id));
+
+-- notifications: each user sees and updates only their own
+create policy nf_read   on public.notifications for select using (user_id = auth.uid());
+create policy nf_update on public.notifications for update using (user_id = auth.uid());

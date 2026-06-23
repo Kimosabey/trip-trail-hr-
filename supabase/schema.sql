@@ -111,6 +111,18 @@ create table if not exists public.grade_limits (
   max_lodging  numeric(12,2)
 );
 
+-- ---------- notifications (in-app alerts) ----------
+create table if not exists public.notifications (
+  id         uuid primary key default gen_random_uuid(),
+  user_id    uuid not null references public.users(id) on delete cascade,
+  claim_id   text references public.claims(id) on delete cascade,
+  kind       text,
+  message    text,
+  read       boolean not null default false,
+  created_at timestamptz not null default now()
+);
+create index if not exists idx_notif_user on public.notifications(user_id, read);
+
 -- ---------- totals engine (mirrors the spreadsheet formulas) ----------
 create or replace function public.recompute_claim_totals(p_claim text)
 returns void language plpgsql as $$
@@ -183,3 +195,33 @@ end $$;
 drop trigger if exists users_guard_role on public.users;
 create trigger users_guard_role before update on public.users
   for each row execute function public.guard_user_role();
+
+-- notifications fan-out on claim status change
+create or replace function public.notify_on_status()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if (tg_op = 'UPDATE' and new.status is not distinct from old.status) then return new; end if;
+  if new.status = 'submitted' then
+    insert into public.notifications(user_id, claim_id, kind, message)
+      select id, new.id, 'review', 'New claim to review: ' || coalesce(new.purpose,'') || ' (' || new.id || ')'
+      from public.users where role in ('hod','hr_admin');
+  elsif new.status = 'hod_approved' then
+    insert into public.notifications(user_id, claim_id, kind, message)
+      select id, new.id, 'review', 'Claim ready to check: ' || new.id from public.users where role in ('checker','hr_admin');
+  elsif new.status = 'checked' then
+    insert into public.notifications(user_id, claim_id, kind, message)
+      select id, new.id, 'review', 'Claim awaiting approval: ' || new.id from public.users where role in ('approver','hr_admin');
+  elsif new.status = 'approved' then
+    insert into public.notifications(user_id, claim_id, kind, message) values (new.user_id, new.id, 'approved', 'Your claim ' || new.id || ' was approved');
+  elsif new.status = 'rejected' then
+    insert into public.notifications(user_id, claim_id, kind, message) values (new.user_id, new.id, 'rejected', 'Your claim ' || new.id || ' was rejected');
+  elsif new.status = 'returned' then
+    insert into public.notifications(user_id, claim_id, kind, message) values (new.user_id, new.id, 'returned', 'Your claim ' || new.id || ' was returned for edit');
+  elsif new.status = 'paid' then
+    insert into public.notifications(user_id, claim_id, kind, message) values (new.user_id, new.id, 'paid', 'Your claim ' || new.id || ' was marked paid');
+  end if;
+  return new;
+end $$;
+drop trigger if exists claims_notify on public.claims;
+create trigger claims_notify after insert or update on public.claims
+  for each row execute function public.notify_on_status();
